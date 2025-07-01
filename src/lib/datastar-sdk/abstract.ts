@@ -172,7 +172,9 @@ export abstract class ServerSentEventGenerator {
   ): ReturnType<typeof this.send> {
     const { eventId, retryDuration, attributes, ...eventOptions } =
       options || ({} as Partial<ExecuteScriptOptions>)
-    const attributesArray =Array.isArray(attributes) ? attributes : this.eachOptionIsADataLine(attributes ?? {})
+    const attributesArray = Array.isArray(attributes)
+      ? attributes
+      : this.eachOptionIsADataLine(attributes ?? {})
 
     const attributesDataLines = attributesArray
       .filter(line => {

@@ -1,6 +1,8 @@
+import { createHash } from 'node:crypto'
 import { desc, eq } from 'drizzle-orm'
 import { Hono } from 'hono'
 import type { FC } from 'hono/jsx'
+import { bus } from './bus'
 import { db } from './db'
 import { memos } from './db/schema'
 import { ServerSentEventGenerator } from './lib/datastar-sdk/sse'
@@ -20,7 +22,10 @@ const Layout: FC = props => (
       />
     </head>
     <body class="bg-gray-100 flex justify-center py-10 font-sans">
-      <div class="max-w-2xl w-full">{props.children}</div>
+      <div class="max-w-2xl w-full">
+        <div data-on-load="@get('/memos/stream')" />
+        {props.children}
+      </div>
     </body>
   </html>
 )
@@ -44,8 +49,8 @@ const MemoForm: FC = () => (
       class="mt-3 w-full px-4 py-2 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition disabled:bg-gray-400"
       data-attr-disabled="$isAdding"
     >
-        <span data-show="!$isAdding">Add Memo</span>
-        <span data-show="$isAdding">Adding...</span>
+      <span data-show="!$isAdding">Add Memo</span>
+      <span data-show="$isAdding">Adding...</span>
     </button>
   </form>
 )
@@ -78,6 +83,40 @@ const MemoList: FC<{ memos: Memo[] }> = ({ memos }) => (
   </div>
 )
 
+app.get('/memos/stream', c => {
+  let off: (() => void) | undefined
+  let lastHash = c.req.header('Last-Event-ID')
+
+  return ServerSentEventGenerator.stream(
+    async stream => {
+      const push = async () => {
+        const all = await db.select().from(memos).orderBy(desc(memos.createdAt)).all()
+        const html = (<MemoList memos={all} />).toString()
+        const newHash = createHash('sha256').update(html).digest('hex')
+
+        if (newHash !== lastHash) {
+          stream.mergeFragments(html, {
+            selector: '#memo-list',
+            mergeMode: 'inner',
+            eventId: newHash,
+          })
+          lastHash = newHash
+        }
+      }
+
+      await push()
+
+      const handler = () => void push().catch()
+      bus.on('memos:changed', handler)
+      off = () => bus.off('memos:changed', handler)
+    },
+    {
+      keepalive: true,
+      onAbort: () => off?.(),
+    }
+  )
+})
+
 app.get('/', async c => {
   const allMemos = await db.select().from(memos).orderBy(desc(memos.createdAt)).all()
 
@@ -93,35 +132,22 @@ app.get('/', async c => {
 app.post('/memos', async c => {
   const { content } = await c.req.parseBody()
 
-  if (typeof content === 'string' && content.trim().length > 0) {
-    const newMemos = await db.insert(memos).values({ content: content.trim() }).returning()
-    const newMemo = newMemos[0]
+  if (typeof content === 'string' && content.trim()) {
+    await db.insert(memos).values({ content: content.trim() })
 
-    if (!newMemo) {
-      return c.body(null, 500)
-    }
-
-    const fragment = <MemoItem memo={newMemo} />
-
-    return ServerSentEventGenerator.stream(async stream => {
-        const fragmentHtml = fragment.toString();
-        stream.mergeFragments(fragmentHtml, {
-            selector: '#memo-list',
-            mergeMode: 'prepend',
-        })
-    })
+    bus.emit('memos:changed')
+    return c.body(null, 204)
   }
 
-  return c.body(null, 204)
+  return c.body(null, 400)
 })
 
 app.post('/memos/delete/:id', async c => {
-  const id = Number.parseInt(c.req.param('id'))
+  const id = Number.parseInt(c.req.param('id'), 10)
   await db.delete(memos).where(eq(memos.id, id))
 
-  return ServerSentEventGenerator.stream(stream => {
-      stream.removeFragments(`#memo-${id}`);
-  })
+  bus.emit('memos:changed')
+  return c.body(null, 204)
 })
 
 export default app

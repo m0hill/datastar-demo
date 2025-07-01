@@ -130,7 +130,7 @@ export const DefaultMapping = {
   [DatastarDatalineUseViewTransition]: DefaultFragmentsUseViewTransitions,
   [DatastarDatalineOnlyIfMissing]: DefaultMergeSignalsOnlyIfMissing,
   [DatastarDatalineAttributes]: {
-    "type": "module"
+    type: 'module',
   },
   [DatastarDatalineAutoRemove]: DefaultExecuteScriptAutoRemove,
-} as const;
+} as const
