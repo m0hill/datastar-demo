@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "9cc73ae6-f7da-4da9-acda-69703a468591",
+  "id": "a6b62882-45ff-455c-a798-10951f8b57e6",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "memos": {
@@ -27,7 +27,7 @@
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
-          "default": "'\"2025-06-30T13:12:16.361Z\"'"
+          "default": "'\"2025-07-01T12:02:24.470Z\"'"
         }
       },
       "indexes": {},
