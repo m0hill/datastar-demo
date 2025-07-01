@@ -1,11 +1,11 @@
 import { createHash } from 'node:crypto'
+import { ServerSentEventGenerator } from 'datastar-sdk/web'
 import { desc, eq } from 'drizzle-orm'
 import { Hono } from 'hono'
 import type { FC } from 'hono/jsx'
 import { bus } from './bus'
 import { db } from './db'
 import { memos } from './db/schema'
-import { ServerSentEventGenerator } from './lib/datastar-sdk/sse'
 
 type Memo = typeof memos.$inferSelect
 
