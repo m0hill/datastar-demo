@@ -5,3 +5,5 @@ export const memos = sqliteTable('memos', {
   content: text('content').notNull(),
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull().default(new Date()),
 })
+
+export type Memo = typeof memos.$inferSelect
