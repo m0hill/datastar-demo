@@ -3,7 +3,7 @@ import { ServerSentEventGenerator } from 'datastar-sdk/web'
 import { desc, eq } from 'drizzle-orm'
 import { Hono } from 'hono'
 import { renderToString } from 'react-dom/server'
-import { bus } from '../bus'
+import { NOTIFY_CHANGE_EVENT, refreshBus } from '../bus'
 import { MemoList } from '../components/memo/list'
 import { db } from '../db'
 import { memos } from '../db/schema'
@@ -34,8 +34,8 @@ memosRouter.get('/stream', c => {
       await push()
 
       const handler = () => void push().catch()
-      bus.on('memos:changed', handler)
-      off = () => bus.off('memos:changed', handler)
+      refreshBus.on(NOTIFY_CHANGE_EVENT, handler)
+      off = () => refreshBus.off(NOTIFY_CHANGE_EVENT, handler)
     },
     {
       keepalive: true,
@@ -48,9 +48,10 @@ memosRouter.post('/', async c => {
   const { content } = await c.req.parseBody()
 
   if (typeof content === 'string' && content.trim()) {
-    await db.insert(memos).values({ content: content.trim() })
+    await db.writeTransaction(async tx => {
+      return tx.insert(memos).values({ content: content.trim() })
+    })
 
-    bus.emit('memos:changed')
     return c.body(null, 204)
   }
 
@@ -59,8 +60,10 @@ memosRouter.post('/', async c => {
 
 memosRouter.post('/delete/:id', async c => {
   const id = Number.parseInt(c.req.param('id'), 10)
-  await db.delete(memos).where(eq(memos.id, id))
 
-  bus.emit('memos:changed')
+  await db.writeTransaction(async tx => {
+    return tx.delete(memos).where(eq(memos.id, id))
+  })
+
   return c.body(null, 204)
 })
