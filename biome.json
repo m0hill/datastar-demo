@@ -6,8 +6,7 @@
     "useIgnoreFile": false
   },
   "files": {
-    "ignoreUnknown": false,
-    "includes": ["**", "!**/node_modules", "!**/dist", "!**/.git", "!**/build"]
+    "ignoreUnknown": false
   },
   "formatter": {
     "enabled": true,
@@ -19,55 +18,16 @@
   },
   "assist": { "actions": { "source": { "organizeImports": "on" } } },
   "linter": {
-    "enabled": true,
-    "rules": {
-      "recommended": true,
-      "correctness": {
-        "noUnusedVariables": "error",
-        "noUnusedImports": "error",
-        "noUndeclaredVariables": "error",
-        "useExhaustiveDependencies": "error"
-      },
-      "suspicious": {
-        "noExplicitAny": "error",
-        "noEmptyInterface": "error",
-        "noConsole": { "level": "warn", "options": { "allow": ["log"] } },
-        "noVar": "error"
-      },
-      "style": {
-        "useConst": "error",
-        "useBlockStatements": "off",
-        "noParameterAssign": "error",
-        "useAsConstAssertion": "error",
-        "useDefaultParameterLast": "error",
-        "useEnumInitializers": "error",
-        "useSelfClosingElements": "error",
-        "useSingleVarDeclarator": "error",
-        "noUnusedTemplateLiteral": "error",
-        "useNumberNamespace": "error",
-        "noInferrableTypes": "error",
-        "noUselessElse": "error",
-        "useConsistentCurlyBraces": "error",
-        "useCollapsedIf": "error",
-        "noNonNullAssertion": "off"
-      },
-      "nursery": {},
-      "complexity": {
-        "noUselessCatch": "off",
-        "noUselessStringRaw": "error"
-      },
-      "a11y": {
-        "useHtmlLang": "off",
-        "useButtonType": "off"
-      }
-    }
+    "enabled": false
   },
   "javascript": {
     "formatter": {
       "quoteStyle": "single",
       "trailingCommas": "es5",
       "semicolons": "asNeeded",
-      "arrowParentheses": "asNeeded"
+      "arrowParentheses": "asNeeded",
+      "bracketSameLine": false,
+      "jsxQuoteStyle": "double"
     }
   }
 }

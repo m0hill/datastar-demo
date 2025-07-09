@@ -1,9 +1,13 @@
 import type { FC, PropsWithChildren } from 'react'
 
-export const Layout: FC<PropsWithChildren> = ({ children }) => (
+interface LayoutProps extends PropsWithChildren {
+  conversationId?: string
+}
+
+export const Layout: FC<LayoutProps> = ({ children, conversationId = 'default-conversation' }) => (
   <html>
     <head>
-      <title>Memo App</title>
+      <title>AI Chat</title>
       <link href="/public/styles.css" rel="stylesheet" />
 
       <script
@@ -11,9 +15,9 @@ export const Layout: FC<PropsWithChildren> = ({ children }) => (
         src="https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.0-beta.11/bundles/datastar.js"
       />
     </head>
-    <body className="flex justify-center py-10 font-sans">
-      <div className="max-w-2xl w-full">
-        <div data-on-load="@get('/memos/stream')" />
+    <body className="font-sans bg-gray-50">
+      <div className="max-w-7xl mx-auto bg-white min-h-screen">
+        <div data-on-load={`@get('/messages/stream/${conversationId}')`} />
         {children}
       </div>
     </body>
