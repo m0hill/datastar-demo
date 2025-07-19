@@ -5,27 +5,21 @@ import { renderToString } from 'react-dom/server'
 import { TodoList } from '@/components/TodoList'
 import { createDB } from '@/db'
 import { todos } from '@/db/schema'
+import { createRefreshMiddleware } from '@/lib/middleware'
 
 const actions = new Hono<{ Bindings: Env }>()
 
-const broadcastListRefresh = async (c: any) => {
-  const db = createDB(c.env)
-  const allTodos = await db.query.todos.findMany({
-    orderBy: [asc(todos.createdAt)],
-  })
+const todoRefreshMiddleware = createRefreshMiddleware({
+  resourceId: 'todo-list-global',
+  fetchData: c => {
+    const db = createDB(c.env)
+    return db.query.todos.findMany({ orderBy: [asc(todos.createdAt)] })
+  },
+  renderComponent: data => <TodoList todos={data} />,
+})
 
-  const componentHtml = renderToString(<TodoList todos={allTodos} />)
-
-  const doId = c.env.TODO_LIST.idFromName('global-list')
-  const stub = c.env.TODO_LIST.get(doId)
-
-  const url = new URL(c.req.url)
-  url.pathname = '/broadcast'
-  return stub.fetch(url.toString(), {
-    method: 'POST',
-    body: JSON.stringify({ type: 'refresh', payload: { html: componentHtml } }),
-  })
-}
+actions.use('/todos/*', todoRefreshMiddleware)
+actions.use('/todos', todoRefreshMiddleware)
 
 actions.post('/todos', async c => {
   const db = createDB(c.env)
@@ -41,7 +35,6 @@ actions.post('/todos', async c => {
     createdAt: new Date(),
   })
 
-  await broadcastListRefresh(c)
   return c.body(null, 204)
 })
 
@@ -49,7 +42,6 @@ actions.delete('/todos/:id', async c => {
   const db = createDB(c.env)
   const id = c.req.param('id')
   await db.delete(todos).where(eq(todos.id, id))
-  await broadcastListRefresh(c)
   return c.body(null, 204)
 })
 
@@ -60,7 +52,6 @@ actions.post('/todos/:id/toggle', async c => {
   if (!currentTodo) return c.notFound()
 
   await db.update(todos).set({ completed: !currentTodo.completed }).where(eq(todos.id, id))
-  await broadcastListRefresh(c)
   return c.body(null, 204)
 })
 
@@ -71,21 +62,18 @@ actions.post('/todos/toggle-all', async c => {
 
   const allCompleted = allTodos.every(todo => todo.completed)
   await db.update(todos).set({ completed: !allCompleted })
-  await broadcastListRefresh(c)
   return c.body(null, 204)
 })
 
 actions.delete('/todos/completed', async c => {
   const db = createDB(c.env)
   await db.delete(todos).where(eq(todos.completed, true))
-  await broadcastListRefresh(c)
   return c.body(null, 204)
 })
 
 actions.delete('/todos', async c => {
   const db = createDB(c.env)
   await db.delete(todos)
-  await broadcastListRefresh(c)
   return c.body(null, 204)
 })
 

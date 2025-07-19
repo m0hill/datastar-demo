@@ -21,15 +21,15 @@
   "durable_objects": {
     "bindings": [
       {
-        "name": "TODO_LIST",
-        "class_name": "TodoList"
+        "name": "BROADCASTER",
+        "class_name": "Broadcaster"
       }
     ]
   },
   "migrations": [
     {
-      "tag": "v1",
-      "new_sqlite_classes": ["TodoList"]
+      "tag": "v2",
+      "new_sqlite_classes": ["Broadcaster"]
     }
   ],
   "observability": {

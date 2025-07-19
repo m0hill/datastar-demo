@@ -22,7 +22,7 @@ pages.get('/', async c => {
       </head>
       <body className="bg-gray-100 font-sans">
         <TodoList todos={allTodos} />
-        <div data-on-load="@get('/stream')"></div>
+        <div data-on-load="@get('/rt/todo-list-global/stream')"></div>
       </body>
     </html>
   )
