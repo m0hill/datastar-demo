@@ -1,0 +1,35 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "my-app",
+  "main": "src/index.ts",
+  "compatibility_date": "2025-07-19",
+  "compatibility_flags": ["nodejs_compat"],
+  "vars": {
+    "NODE_ENV": "production"
+  },
+  "assets": {
+    "directory": "./public/",
+    "binding": "ASSETS"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "todo-app",
+      "database_id": "29b8028b-913a-405c-82ac-57111fec65a1"
+    }
+  ],
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "TODO_LIST",
+        "class_name": "TodoList"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["TodoList"]
+    }
+  ]
+}
