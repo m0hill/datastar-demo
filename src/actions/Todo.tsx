@@ -4,12 +4,13 @@ import { Hono } from 'hono'
 import { TodoList } from '@/components/TodoList'
 import { createDB } from '@/db'
 import { todos } from '@/db/schema'
+import { ds } from '@/lib/datastar'
 import { createRefreshMiddleware } from '@/lib/middleware'
 
 const actions = new Hono<{ Bindings: Env }>()
 
 const todoRefreshMiddleware = createRefreshMiddleware({
-  resourceId: 'todo-list-global',
+  resourceId: ds.resources.todos,
   fetchData: c => {
     const db = createDB(c.env)
     return db.query.todos.findMany({ orderBy: [asc(todos.createdAt)] })

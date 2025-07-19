@@ -56,7 +56,7 @@ export const TodoList: React.FC<{ todos: Todo[] }> = ({ todos }) => {
         </Card>
       )}
 
-      <div id="todo-list" className="space-y-2">
+      <div className="space-y-2">
         {todos.length === 0 ? (
           <Card>
             <CardContent className="p-8 text-center">

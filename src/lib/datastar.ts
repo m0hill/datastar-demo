@@ -1,4 +1,7 @@
 export const ds = {
+  resources: {
+    todos: 'todo-list-global',
+  },
   actions: {
     todos: {
       create: () => `@post('/api/todos', {contentType: 'form'})`,
