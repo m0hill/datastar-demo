@@ -65,8 +65,6 @@ export class TodoList extends DurableObject {
         })
         break
       case 'update':
-        dataLines.push('data: mode morph')
-        dataLines.push(`data: selector #todo-${payload.id}`)
         payload.html!.split('\n').forEach(line => {
           if (line.trim()) dataLines.push(`data: elements ${line}`)
         })
