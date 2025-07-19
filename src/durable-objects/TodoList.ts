@@ -15,8 +15,8 @@ export class TodoList extends DurableObject {
     }
 
     if (url.pathname.endsWith('/broadcast') && request.method === 'POST') {
-      const { type, payload } = await request.json<any>()
-      this.broadcastUpdate(type, payload)
+      const { payload } = await request.json<{ payload: { html: string } }>()
+      this.broadcastRefresh(payload)
       return new Response('Broadcast successful', { status: 200 })
     }
 
@@ -49,31 +49,13 @@ export class TodoList extends DurableObject {
     return new TextEncoder().encode(message)
   }
 
-  private broadcastUpdate(
-    type: 'new' | 'update' | 'delete',
-    payload: { id: string; html?: string }
-  ) {
+  private broadcastRefresh(payload: { html: string }) {
     const eventType = 'datastar-patch-elements'
     const dataLines: string[] = []
 
-    switch (type) {
-      case 'new':
-        dataLines.push('data: mode append')
-        dataLines.push('data: selector #todo-list')
-        payload.html!.split('\n').forEach(line => {
-          if (line.trim()) dataLines.push(`data: elements ${line}`)
-        })
-        break
-      case 'update':
-        payload.html!.split('\n').forEach(line => {
-          if (line.trim()) dataLines.push(`data: elements ${line}`)
-        })
-        break
-      case 'delete':
-        dataLines.push('data: mode remove')
-        dataLines.push(`data: selector #todo-${payload.id}`)
-        break
-    }
+    payload.html.split('\n').forEach(line => {
+      if (line.trim()) dataLines.push(`data: elements ${line}`)
+    })
 
     if (dataLines.length === 0) {
       return

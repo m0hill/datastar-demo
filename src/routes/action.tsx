@@ -1,21 +1,29 @@
 import { randomUUID } from 'node:crypto'
-import { eq } from 'drizzle-orm'
+import { asc, eq } from 'drizzle-orm'
 import { Hono } from 'hono'
 import { renderToString } from 'react-dom/server'
-import { TodoItem } from '@/components/TodoItem'
+import { TodoList } from '@/components/TodoList'
 import { createDB } from '@/db'
 import { todos } from '@/db/schema'
 
 const actions = new Hono<{ Bindings: Env }>()
 
-const notifyDO = (c: any, type: string, payload: any) => {
+const broadcastListRefresh = async (c: any) => {
+  const db = createDB(c.env)
+  const allTodos = await db.query.todos.findMany({
+    orderBy: [asc(todos.createdAt)],
+  })
+
+  const componentHtml = renderToString(<TodoList todos={allTodos} />)
+
   const doId = c.env.TODO_LIST.idFromName('global-list')
   const stub = c.env.TODO_LIST.get(doId)
+
   const url = new URL(c.req.url)
   url.pathname = '/broadcast'
   return stub.fetch(url.toString(), {
     method: 'POST',
-    body: JSON.stringify({ type, payload }),
+    body: JSON.stringify({ type: 'refresh', payload: { html: componentHtml } }),
   })
 }
 
@@ -27,49 +35,87 @@ actions.post('/todos', async c => {
     return c.text('Content is required', 400)
   }
 
-  const newTodo = {
+  await db.insert(todos).values({
     id: randomUUID(),
     content: text,
-    completed: false,
     createdAt: new Date(),
-  }
+  })
 
-  await db.insert(todos).values(newTodo)
-
-  const html = renderToString(<TodoItem todo={newTodo} />)
-  await notifyDO(c, 'new', { id: newTodo.id, html })
-
+  await broadcastListRefresh(c)
   return c.body(null, 204)
 })
 
 actions.delete('/todos/:id', async c => {
   const db = createDB(c.env)
   const id = c.req.param('id')
-
   await db.delete(todos).where(eq(todos.id, id))
-  await notifyDO(c, 'delete', { id })
-
+  await broadcastListRefresh(c)
   return c.body(null, 204)
 })
 
 actions.post('/todos/:id/toggle', async c => {
   const db = createDB(c.env)
   const id = c.req.param('id')
-
   const currentTodo = await db.query.todos.findFirst({ where: eq(todos.id, id) })
   if (!currentTodo) return c.notFound()
 
-  const updatedTodo = {
-    ...currentTodo,
-    completed: !currentTodo.completed,
+  await db.update(todos).set({ completed: !currentTodo.completed }).where(eq(todos.id, id))
+  await broadcastListRefresh(c)
+  return c.body(null, 204)
+})
+
+actions.post('/todos/toggle-all', async c => {
+  const db = createDB(c.env)
+  const allTodos = await db.select().from(todos).all()
+  if (allTodos.length === 0) return c.body(null, 204)
+
+  const allCompleted = allTodos.every(todo => todo.completed)
+  await db.update(todos).set({ completed: !allCompleted })
+  await broadcastListRefresh(c)
+  return c.body(null, 204)
+})
+
+actions.delete('/todos/completed', async c => {
+  const db = createDB(c.env)
+  await db.delete(todos).where(eq(todos.completed, true))
+  await broadcastListRefresh(c)
+  return c.body(null, 204)
+})
+
+actions.delete('/todos', async c => {
+  const db = createDB(c.env)
+  await db.delete(todos)
+  await broadcastListRefresh(c)
+  return c.body(null, 204)
+})
+
+actions.get('/todos', async c => {
+  const db = createDB(c.env)
+  const filter = c.req.query('filter') ?? 'all'
+
+  let filteredTodos
+  const baseQuery = { orderBy: [asc(todos.createdAt)] }
+
+  if (filter === 'active') {
+    filteredTodos = await db.query.todos.findMany({
+      ...baseQuery,
+      where: eq(todos.completed, false),
+    })
+  } else if (filter === 'completed') {
+    filteredTodos = await db.query.todos.findMany({
+      ...baseQuery,
+      where: eq(todos.completed, true),
+    })
+  } else {
+    filteredTodos = await db.query.todos.findMany(baseQuery)
   }
 
-  await db.update(todos).set({ completed: updatedTodo.completed }).where(eq(todos.id, id))
+  const componentHtml = renderToString(<TodoList todos={filteredTodos} />)
 
-  const html = renderToString(<TodoItem todo={updatedTodo} />)
-  await notifyDO(c, 'update', { id: updatedTodo.id, html })
-
-  return c.body(null, 204)
+  c.header('Content-Type', 'text/html')
+  c.header('datastar-selector', '#todo-app')
+  c.header('datastar-mode', 'outer')
+  return c.html(componentHtml)
 })
 
 export { actions }
