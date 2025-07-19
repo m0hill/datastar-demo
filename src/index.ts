@@ -1,7 +1,7 @@
 import { Hono } from 'hono'
+import { actions } from '@/actions/Todo'
 import { createRealtimeRouter } from '@/lib/realtime'
-import { actions } from '@/routes/action'
-import { pages } from '@/routes/pages'
+import { pages } from '@/pages/Todo'
 
 export { Broadcaster } from '@/durable-objects/Broadcaster'
 

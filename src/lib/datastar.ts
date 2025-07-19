@@ -1,0 +1,17 @@
+export const ds = {
+  actions: {
+    todos: {
+      create: () => `@post('/api/todos', {contentType: 'form'})`,
+      toggle: (id: string) => `@post('/api/todos/${id}/toggle')`,
+      deleteById: (id: string) => `@delete('/api/todos/${id}')`,
+      deleteAll: () => `@delete('/api/todos')`,
+      deleteCompleted: () => `@delete('/api/todos/completed')`,
+      toggleAll: () => `@post('/api/todos/toggle-all')`,
+    },
+  },
+  signals: {
+    todos: {
+      setFilter: (filter: 'all' | 'active' | 'completed') => `$filter = '${filter}'`,
+    },
+  },
+}

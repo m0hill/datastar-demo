@@ -3,12 +3,13 @@ import React from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
+import { ds } from '@/lib/datastar'
 
 export const TodoForm: React.FC = () => {
   return (
     <Card className="mb-6">
       <CardContent className="p-4">
-        <form data-on-submit="@post('/api/todos', {contentType: 'form'})" className="flex gap-2">
+        <form data-on-submit={ds.actions.todos.create()} className="flex gap-2">
           <Input
             name="text"
             placeholder="Add a new todo..."

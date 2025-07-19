@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Checkbox } from '@/components/ui/checkbox'
 import { todos } from '@/db/schema'
+import { ds } from '@/lib/datastar'
 
 type Todo = typeof todos.$inferSelect
 
@@ -13,7 +14,7 @@ export const TodoItem: React.FC<{ todo: Todo }> = ({ todo }) => {
       <CardContent className="flex items-center gap-3 p-4">
         <Checkbox
           checked={todo.completed ?? undefined}
-          data-on-click={`@post('/api/todos/${todo.id}/toggle')`}
+          data-on-click={ds.actions.todos.toggle(todo.id)}
           className="cursor-pointer"
         />
 
@@ -30,7 +31,7 @@ export const TodoItem: React.FC<{ todo: Todo }> = ({ todo }) => {
         <Button
           variant="ghost"
           size="sm"
-          data-on-click={`@delete('/api/todos/${todo.id}')`}
+          data-on-click={ds.actions.todos.deleteById(todo.id)}
           className="text-red-500 hover:text-red-700 hover:bg-red-50"
         >
           <Trash2 className="h-4 w-4" />
