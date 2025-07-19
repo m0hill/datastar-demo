@@ -14,7 +14,7 @@ pages.get('/', async c => {
     <html>
       <head>
         <title>Real-time Todo App</title>
-        <link href="/public/styles.css" rel="stylesheet" />
+        <link href="/styles.css" rel="stylesheet" />
         <script
           type="module"
           src="https://cdn.jsdelivr.net/gh/starfederation/datastar@main/bundles/datastar.js"

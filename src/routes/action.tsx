@@ -42,7 +42,7 @@ actions.post('/todos', async c => {
   return c.body(null, 204)
 })
 
-actions.post('/todos/:id/delete', async c => {
+actions.delete('/todos/:id', async c => {
   const db = createDB(c.env)
   const id = c.req.param('id')
 

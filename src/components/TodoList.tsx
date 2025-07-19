@@ -31,13 +31,13 @@ export const TodoList: React.FC<{ todos: Todo[] }> = ({ todos }) => {
         <Card className="mb-4">
           <CardContent className="p-4">
             <div className="flex gap-2 flex-wrap">
-              <Button variant="outline" size="sm" data-on-click="$$post('/api/todos/toggle-all')">
+              <Button variant="outline" size="sm" data-on-click="@post('/api/todos/toggle-all')">
                 Toggle All
               </Button>
               <Button
                 variant="outline"
                 size="sm"
-                data-on-click="$$delete('/api/todos/completed')"
+                data-on-click="@delete('/api/todos/completed')"
                 className="text-red-600 hover:text-red-700"
               >
                 Clear Completed
@@ -45,7 +45,7 @@ export const TodoList: React.FC<{ todos: Todo[] }> = ({ todos }) => {
               <Button
                 variant="outline"
                 size="sm"
-                data-on-click="$$delete('/api/todos')"
+                data-on-click="@delete('/api/todos')"
                 className="text-red-600 hover:text-red-700"
               >
                 Clear All
@@ -55,7 +55,7 @@ export const TodoList: React.FC<{ todos: Todo[] }> = ({ todos }) => {
         </Card>
       )}
 
-      <div className="space-y-2">
+      <div id="todo-list" className="space-y-2">
         {todos.length === 0 ? (
           <Card>
             <CardContent className="p-8 text-center">
@@ -71,13 +71,28 @@ export const TodoList: React.FC<{ todos: Todo[] }> = ({ todos }) => {
       <Card className="mt-6">
         <CardContent className="p-4">
           <div className="flex gap-2 justify-center">
-            <Button variant="ghost" size="sm" data-on-click="$$get('/api/todos?filter=all')" data-indicator-loading>
+            <Button
+              variant="ghost"
+              size="sm"
+              data-on-click="@get('/api/todos?filter=all')"
+              data-indicator="loading"
+            >
               All ({totalCount})
             </Button>
-            <Button variant="ghost" size="sm" data-on-click="$$get('/api/todos?filter=active')" data-indicator-loading>
+            <Button
+              variant="ghost"
+              size="sm"
+              data-on-click="@get('/api/todos?filter=active')"
+              data-indicator="loading"
+            >
               Active ({totalCount - completedCount})
             </Button>
-            <Button variant="ghost" size="sm" data-on-click="$$get('/api/todos?filter=completed')" data-indicator-loading>
+            <Button
+              variant="ghost"
+              size="sm"
+              data-on-click="@get('/api/todos?filter=completed')"
+              data-indicator="loading"
+            >
               Completed ({completedCount})
             </Button>
           </div>

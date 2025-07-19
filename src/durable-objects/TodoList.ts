@@ -53,29 +53,35 @@ export class TodoList extends DurableObject {
     type: 'new' | 'update' | 'delete',
     payload: { id: string; html?: string }
   ) {
-    let event: Uint8Array
+    const eventType = 'datastar-patch-elements'
+    const dataLines: string[] = []
 
     switch (type) {
       case 'new':
-        event = this.formatSseMessage('datastar-merge-fragments', [
-          'data: selector #todo-list',
-          'data: mergeMode append',
-          `data: fragments ${payload.html!}`,
-        ])
+        dataLines.push('data: mode append')
+        dataLines.push('data: selector #todo-list')
+        payload.html!.split('\n').forEach(line => {
+          if (line.trim()) dataLines.push(`data: elements ${line}`)
+        })
         break
       case 'update':
-        event = this.formatSseMessage('datastar-merge-fragments', [
-          `data: selector #todo-${payload.id}`,
-          'data: mergeMode morph',
-          `data: fragments ${payload.html!}`,
-        ])
+        dataLines.push('data: mode morph')
+        dataLines.push(`data: selector #todo-${payload.id}`)
+        payload.html!.split('\n').forEach(line => {
+          if (line.trim()) dataLines.push(`data: elements ${line}`)
+        })
         break
       case 'delete':
-        event = this.formatSseMessage('datastar-remove-fragments', [
-          `data: selector #todo-${payload.id}`,
-        ])
+        dataLines.push('data: mode remove')
+        dataLines.push(`data: selector #todo-${payload.id}`)
         break
     }
+
+    if (dataLines.length === 0) {
+      return
+    }
+
+    const event = this.formatSseMessage(eventType, dataLines)
 
     this.sessions = this.sessions.filter(stream => {
       try {

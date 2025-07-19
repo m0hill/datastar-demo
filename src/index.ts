@@ -11,7 +11,7 @@ app.route('/', pages)
 app.route('/', sse)
 app.route('/api', actions)
 
-app.get('/*', async (c) => {
+app.get('/*', async c => {
   return c.env.ASSETS.fetch(c.req.raw)
 })
 

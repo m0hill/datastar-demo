@@ -9,11 +9,11 @@ type Todo = typeof todos.$inferSelect
 
 export const TodoItem: React.FC<{ todo: Todo }> = ({ todo }) => {
   return (
-    <Card className="mb-2">
+    <Card id={`todo-${todo.id}`} className="mb-2">
       <CardContent className="flex items-center gap-3 p-4">
         <Checkbox
           checked={todo.completed ?? undefined}
-          data-on-click={`$$post('/api/todos/${todo.id}/toggle')`}
+          data-on-click={`@post('/api/todos/${todo.id}/toggle')`}
           className="cursor-pointer"
         />
 
@@ -30,7 +30,7 @@ export const TodoItem: React.FC<{ todo: Todo }> = ({ todo }) => {
         <Button
           variant="ghost"
           size="sm"
-          data-on-click={`$$delete('/api/todos/${todo.id}')`}
+          data-on-click={`@delete('/api/todos/${todo.id}')`}
           className="text-red-500 hover:text-red-700 hover:bg-red-50"
         >
           <Trash2 className="h-4 w-4" />

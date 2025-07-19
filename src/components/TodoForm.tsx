@@ -8,7 +8,7 @@ export const TodoForm: React.FC = () => {
   return (
     <Card className="mb-6">
       <CardContent className="p-4">
-        <form data-on-submit="$$post('/api/todos')" className="flex gap-2">
+        <form data-on-submit="@post('/api/todos', {contentType: 'form'})" className="flex gap-2">
           <Input
             name="text"
             placeholder="Add a new todo..."
