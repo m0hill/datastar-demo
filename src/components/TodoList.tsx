@@ -12,7 +12,7 @@ export const TodoList: React.FC<{ todos: Todo[] }> = ({ todos }) => {
   const totalCount = todos.length
 
   return (
-    <div id="todo-app" className="max-w-2xl mx-auto p-4">
+    <div id="todo-app" className="max-w-2xl mx-auto p-4" data-signals="{ filter: 'all' }">
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">Todo List</h1>
         <p className="text-gray-600">
@@ -64,35 +64,31 @@ export const TodoList: React.FC<{ todos: Todo[] }> = ({ todos }) => {
             </CardContent>
           </Card>
         ) : (
-          todos.map(todo => <TodoItem key={todo.id} todo={todo} />)
+          todos.map(todo => (
+            <div
+              key={todo.id}
+              data-show={
+                `$filter === 'all' || ` +
+                `($filter === 'active' && !${todo.completed}) || ` +
+                `($filter === 'completed' && ${todo.completed})`
+              }
+            >
+              <TodoItem todo={todo} />
+            </div>
+          ))
         )}
       </div>
 
       <Card className="mt-6">
         <CardContent className="p-4">
           <div className="flex gap-2 justify-center">
-            <Button
-              variant="ghost"
-              size="sm"
-              data-on-click="@get('/api/todos?filter=all')"
-              data-indicator="loading"
-            >
+            <Button variant="ghost" size="sm" data-on-click="$filter = 'all'">
               All ({totalCount})
             </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              data-on-click="@get('/api/todos?filter=active')"
-              data-indicator="loading"
-            >
+            <Button variant="ghost" size="sm" data-on-click="$filter = 'active'">
               Active ({totalCount - completedCount})
             </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              data-on-click="@get('/api/todos?filter=completed')"
-              data-indicator="loading"
-            >
+            <Button variant="ghost" size="sm" data-on-click="$filter = 'completed'">
               Completed ({completedCount})
             </Button>
           </div>
