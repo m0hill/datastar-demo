@@ -7,6 +7,9 @@
   "vars": {
     "NODE_ENV": "production"
   },
+  "placement": {
+    "mode": "smart"
+  },
   "assets": {
     "directory": "./public/",
     "binding": "ASSETS"

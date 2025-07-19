@@ -14,9 +14,12 @@ export const createRefreshMiddleware = <T>(options: MiddlewareOptions<T>) => {
     await next()
 
     if (c.res.ok) {
-      const data = await fetchData(c as Context<{ Bindings: Env }>)
+      const data = await fetchData(c)
       const component = renderComponent(data)
-      await broadcastRefresh(c as Context<{ Bindings: Env }>, resourceId, component)
+
+      c.executionCtx.waitUntil(
+        broadcastRefresh(c, resourceId, component)
+      )
     }
   }
 }
