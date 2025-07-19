@@ -5,9 +5,9 @@ import { createDB } from '@/db'
 import { todos } from '@/db/schema'
 import { ds } from '@/lib/datastar'
 
-const pages = new Hono<{ Bindings: Env }>()
+const todoPages = new Hono<{ Bindings: Env }>()
 
-pages.get('/', async c => {
+todoPages.get('/', async c => {
   const db = createDB(c.env)
   const allTodos = await db.select().from(todos).orderBy(todos.createdAt).all()
 
@@ -31,4 +31,4 @@ pages.get('/', async c => {
   return c.html(renderToString(Page))
 })
 
-export { pages }
+export { todoPages }
