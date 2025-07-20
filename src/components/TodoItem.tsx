@@ -9,7 +9,7 @@ import { ds } from '@/lib/datastar'
 type Todo = typeof todos.$inferSelect
 
 export const TodoItem: React.FC<{ todo: Todo }> = ({ todo }) => {
-  const deletingSignal = `deleting_${todo.id}`
+  const deletingSignal = `_deleting_${todo.id}`
 
   return (
     <Card id={`todo-${todo.id}`} className="mb-2" data-signals={`{ '${deletingSignal}': false }`}>

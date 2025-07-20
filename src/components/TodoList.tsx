@@ -13,7 +13,7 @@ export const TodoList: React.FC<{ todos: Todo[] }> = ({ todos }) => {
   const totalCount = todos.length
 
   return (
-    <div id="todo-app" className="max-w-2xl mx-auto p-4" data-signals="{ filter: 'all' }">
+    <div id="todo-app" className="max-w-2xl mx-auto p-4" data-signals="{ _filter: 'all' }">
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">Todo List</h1>
         <p className="text-gray-600">
@@ -23,7 +23,7 @@ export const TodoList: React.FC<{ todos: Todo[] }> = ({ todos }) => {
 
       <TodoForm />
 
-      <div data-show="$loading" className="flex items-center justify-center py-4 text-gray-500">
+      <div data-show="$_loading" className="flex items-center justify-center py-4 text-gray-500">
         <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></div>
         <span className="ml-2">Loading...</span>
       </div>
@@ -69,9 +69,9 @@ export const TodoList: React.FC<{ todos: Todo[] }> = ({ todos }) => {
             <div
               key={todo.id}
               data-show={
-                `$filter === 'all' || ` +
-                `($filter === 'active' && !${todo.completed}) || ` +
-                `($filter === 'completed' && ${todo.completed})`
+                `$_filter === 'all' || ` +
+                `($_filter === 'active' && !${todo.completed}) || ` +
+                `($_filter === 'completed' && ${todo.completed})`
               }
             >
               <TodoItem todo={todo} />
@@ -83,13 +83,13 @@ export const TodoList: React.FC<{ todos: Todo[] }> = ({ todos }) => {
       <Card className="mt-6">
         <CardContent className="p-4">
           <div className="flex gap-2 justify-center">
-            <Button variant="ghost" size="sm" data-on-click="$filter = 'all'">
+            <Button variant="ghost" size="sm" data-on-click="$_filter = 'all'">
               All ({totalCount})
             </Button>
-            <Button variant="ghost" size="sm" data-on-click="$filter = 'active'">
+            <Button variant="ghost" size="sm" data-on-click="$_filter = 'active'">
               Active ({totalCount - completedCount})
             </Button>
-            <Button variant="ghost" size="sm" data-on-click="$filter = 'completed'">
+            <Button variant="ghost" size="sm" data-on-click="$_filter = 'completed'">
               Completed ({completedCount})
             </Button>
           </div>

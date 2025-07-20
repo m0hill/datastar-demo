@@ -11,7 +11,7 @@ export const TodoForm: React.FC = () => {
       <CardContent className="p-4">
         <form
           data-on-submit={ds.actions.todos.create()}
-          data-indicator="submitting"
+          data-indicator="_submitting"
           className="flex gap-2"
         >
           <Input
@@ -21,11 +21,11 @@ export const TodoForm: React.FC = () => {
             className="flex-1"
             autoComplete="off"
           />
-          <Button type="submit" className="shrink-0" data-attr-disabled="$submitting">
-            <div data-show="$submitting" className="animate-spin">
+          <Button type="submit" className="shrink-0" data-attr-disabled="$_submitting">
+            <div data-show="$_submitting" className="animate-spin">
               <Loader2 className="h-4 w-4" />
             </div>
-            <div data-show="!$submitting">
+            <div data-show="!$_submitting">
               <Plus className="h-4 w-4 mr-2" />
             </div>
             Add Todo
