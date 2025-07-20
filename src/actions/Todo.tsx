@@ -7,7 +7,7 @@ import { todos } from '@/db/schema'
 import { ds } from '@/lib/datastar'
 import { createRefreshMiddleware } from '@/lib/middleware'
 
-const todoActions = new Hono<{ Bindings: Env }>()
+const actions = new Hono<{ Bindings: Env }>()
 
 const todoRefreshMiddleware = createRefreshMiddleware({
   resourceId: ds.resources.todos,
@@ -18,10 +18,10 @@ const todoRefreshMiddleware = createRefreshMiddleware({
   renderComponent: data => <TodoList todos={data} />,
 })
 
-todoActions.use('/todos/*', todoRefreshMiddleware)
-todoActions.use('/todos', todoRefreshMiddleware)
+actions.use('/todos/*', todoRefreshMiddleware)
+actions.use('/todos', todoRefreshMiddleware)
 
-todoActions.post('/todos', async c => {
+actions.post('/todos', async c => {
   const db = createDB(c.env)
   const { text } = await c.req.parseBody()
 
@@ -38,14 +38,14 @@ todoActions.post('/todos', async c => {
   return c.body(null, 204)
 })
 
-todoActions.delete('/todos/:id', async c => {
+actions.delete('/todos/:id', async c => {
   const db = createDB(c.env)
   const id = c.req.param('id')
   await db.delete(todos).where(eq(todos.id, id))
   return c.body(null, 204)
 })
 
-todoActions.post('/todos/:id/toggle', async c => {
+actions.post('/todos/:id/toggle', async c => {
   const db = createDB(c.env)
   const id = c.req.param('id')
   const currentTodo = await db.query.todos.findFirst({ where: eq(todos.id, id) })
@@ -55,7 +55,7 @@ todoActions.post('/todos/:id/toggle', async c => {
   return c.body(null, 204)
 })
 
-todoActions.post('/todos/toggle-all', async c => {
+actions.post('/todos/toggle-all', async c => {
   const db = createDB(c.env)
   const allTodos = await db.select().from(todos).all()
   if (allTodos.length === 0) return c.body(null, 204)
@@ -65,16 +65,16 @@ todoActions.post('/todos/toggle-all', async c => {
   return c.body(null, 204)
 })
 
-todoActions.delete('/todos/completed', async c => {
+actions.delete('/todos/completed', async c => {
   const db = createDB(c.env)
   await db.delete(todos).where(eq(todos.completed, true))
   return c.body(null, 204)
 })
 
-todoActions.delete('/todos', async c => {
+actions.delete('/todos', async c => {
   const db = createDB(c.env)
   await db.delete(todos)
   return c.body(null, 204)
 })
 
-export { todoActions }
+export { actions }

@@ -1,13 +1,13 @@
 import { type Context, Hono } from 'hono'
 import { renderToString } from 'react-dom/server'
 
-export const createRealtimeRouter = (bindingKey: keyof Env) => {
+export const createRealtimeRouter = () => {
   const router = new Hono<{ Bindings: Env }>()
 
   router.get('/:resourceId/stream', c => {
-    const ns = c.env[bindingKey] as unknown as DurableObjectNamespace
+    const ns = c.env.BROADCASTER
     const resourceId = c.req.param('resourceId')
-    const colo = (c.req.raw.cf as any)?.colo || 'default'
+    const colo = c.req.raw.cf?.colo || 'default'
     const coloAwareId = `${colo}-${resourceId}`
     const id = ns.idFromName(coloAwareId)
     const stub = ns.get(id)
@@ -18,9 +18,9 @@ export const createRealtimeRouter = (bindingKey: keyof Env) => {
   })
 
   router.post('/:resourceId/broadcast', async c => {
-    const ns = c.env[bindingKey] as unknown as DurableObjectNamespace
+    const ns = c.env.BROADCASTER
     const resourceId = c.req.param('resourceId')
-    const colo = (c.req.raw.cf as any)?.colo || 'default'
+    const colo = c.req.raw.cf?.colo || 'default'
     const coloAwareId = `${colo}-${resourceId}`
     const id = ns.idFromName(coloAwareId)
     const stub = ns.get(id)
@@ -44,7 +44,7 @@ export const broadcastRefresh = async (
 ) => {
   const componentHtml = renderToString(component)
 
-  const colo = (c.req.raw.cf as any)?.colo || 'default'
+  const colo = c.req.raw.cf?.colo || 'default'
   const coloAwareId = `${colo}-${resourceId}`
   const doId = c.env.BROADCASTER.idFromName(coloAwareId)
   const stub = c.env.BROADCASTER.get(doId)
