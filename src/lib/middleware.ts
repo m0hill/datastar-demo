@@ -17,9 +17,7 @@ export const createRefreshMiddleware = <T>(options: MiddlewareOptions<T>) => {
       const data = await fetchData(c)
       const component = renderComponent(data)
 
-      c.executionCtx.waitUntil(
-        broadcastRefresh(c, resourceId, component)
-      )
+      c.executionCtx.waitUntil(broadcastRefresh(c, resourceId, component))
     }
   }
 }

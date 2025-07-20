@@ -69,9 +69,9 @@ export const TodoList: React.FC<{ todos: Todo[] }> = ({ todos }) => {
             <div
               key={todo.id}
               data-show={
-                (ds.signals.todos.setFilter('all') + ds.signals.todos.setFilter('active') &&
-                  !todo.completed) ||
-                (ds.signals.todos.setFilter('completed') && todo.completed)
+                `$filter === 'all' || ` +
+                `($filter === 'active' && !${todo.completed}) || ` +
+                `($filter === 'completed' && ${todo.completed})`
               }
             >
               <TodoItem todo={todo} />
@@ -83,17 +83,13 @@ export const TodoList: React.FC<{ todos: Todo[] }> = ({ todos }) => {
       <Card className="mt-6">
         <CardContent className="p-4">
           <div className="flex gap-2 justify-center">
-            <Button variant="ghost" size="sm" data-on-click={ds.signals.todos.setFilter('all')}>
+            <Button variant="ghost" size="sm" data-on-click="$filter = 'all'">
               All ({totalCount})
             </Button>
-            <Button variant="ghost" size="sm" data-on-click={ds.signals.todos.setFilter('active')}>
+            <Button variant="ghost" size="sm" data-on-click="$filter = 'active'">
               Active ({totalCount - completedCount})
             </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              data-on-click={ds.signals.todos.setFilter('completed')}
-            >
+            <Button variant="ghost" size="sm" data-on-click="$filter = 'completed'">
               Completed ({completedCount})
             </Button>
           </div>

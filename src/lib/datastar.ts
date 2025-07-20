@@ -12,9 +12,4 @@ export const ds = {
       toggleAll: () => `@post('/api/todos/toggle-all')`,
     },
   },
-  signals: {
-    todos: {
-      setFilter: (filter: 'all' | 'active' | 'completed') => `$filter = '${filter}'`,
-    },
-  },
 }

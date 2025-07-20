@@ -1,4 +1,4 @@
-import { Trash2 } from 'lucide-react'
+import { Loader2, Trash2 } from 'lucide-react'
 import React from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -9,8 +9,10 @@ import { ds } from '@/lib/datastar'
 type Todo = typeof todos.$inferSelect
 
 export const TodoItem: React.FC<{ todo: Todo }> = ({ todo }) => {
+  const deletingSignal = `deleting_${todo.id}`
+
   return (
-    <Card id={`todo-${todo.id}`} className="mb-2">
+    <Card id={`todo-${todo.id}`} className="mb-2" data-signals={`{ '${deletingSignal}': false }`}>
       <CardContent className="flex items-center gap-3 p-4">
         <Checkbox
           checked={todo.completed ?? undefined}
@@ -32,9 +34,16 @@ export const TodoItem: React.FC<{ todo: Todo }> = ({ todo }) => {
           variant="ghost"
           size="sm"
           data-on-click={ds.actions.todos.deleteById(todo.id)}
+          data-indicator={deletingSignal}
+          data-attr-disabled={`$${deletingSignal}`}
           className="text-red-500 hover:text-red-700 hover:bg-red-50"
         >
-          <Trash2 className="h-4 w-4" />
+          <div data-show={`$${deletingSignal}`} className="animate-spin">
+            <Loader2 className="h-4 w-4" />
+          </div>
+          <div data-show={`!$${deletingSignal}`}>
+            <Trash2 className="h-4 w-4" />
+          </div>
         </Button>
       </CardContent>
     </Card>
