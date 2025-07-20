@@ -6,7 +6,7 @@ interface BroadcastBody {
 }
 
 export class Broadcaster extends DurableObject {
-  private sessions: WritableStream[] = []
+  private sessions = new Map<string, WritableStream>()
 
   constructor(state: DurableObjectState, env: Env) {
     super(state, env)
@@ -20,9 +20,14 @@ export class Broadcaster extends DurableObject {
     }
 
     if (url.pathname === '/broadcast' && request.method === 'POST') {
-      const { eventType, payload } = await request.json<BroadcastBody>()
-      this.broadcast(eventType, payload)
-      return new Response('ok')
+      try {
+        const { eventType, payload } = await request.json<BroadcastBody>()
+        this.broadcast(eventType, payload)
+        return new Response('ok')
+      } catch (error) {
+        console.error('Failed to parse broadcast request:', error)
+        return new Response('Invalid JSON', { status: 400 })
+      }
     }
 
     return new Response('Not found', { status: 404 })
@@ -30,10 +35,12 @@ export class Broadcaster extends DurableObject {
 
   private startStream(request: Request): Response {
     const { readable, writable } = new TransformStream()
-    this.sessions.push(writable)
+    const sessionId = crypto.randomUUID()
+
+    this.sessions.set(sessionId, writable)
 
     request.signal.addEventListener('abort', () => {
-      this.sessions = this.sessions.filter(s => s !== writable)
+      this.sessions.delete(sessionId)
     })
 
     return new Response(readable, {
@@ -41,18 +48,23 @@ export class Broadcaster extends DurableObject {
         'Content-Type': 'text/event-stream',
         Connection: 'keep-alive',
         'Cache-Control': 'no-cache',
+        'Access-Control-Allow-Origin': '*',
       },
     })
   }
 
   private broadcast(eventType: string, payload: unknown) {
+    if (!eventType || payload === undefined) {
+      console.warn('Invalid broadcast parameters')
+      return
+    }
+
     let message = ''
 
     if (eventType === 'datastar-patch-elements') {
       const htmlPayload = payload as { html: string }
       if (htmlPayload?.html) {
         let dataLines = ''
-
         for (const line of htmlPayload.html.split('\n')) {
           dataLines += `data: elements ${line}\n`
         }
@@ -66,16 +78,21 @@ export class Broadcaster extends DurableObject {
     if (!message) return
 
     const data = new TextEncoder().encode(message)
+    const failedSessions: string[] = []
 
-    this.sessions = this.sessions.filter(stream => {
+    for (const [sessionId, stream] of this.sessions.entries()) {
       try {
-        const w = stream.getWriter()
-        w.write(data)
-        w.releaseLock()
-        return true
-      } catch {
-        return false
+        const writer = stream.getWriter()
+        writer.write(data)
+        writer.releaseLock()
+      } catch (error) {
+        console.error(`Failed to write to session ${sessionId}:`, error)
+        failedSessions.push(sessionId)
       }
-    })
+    }
+
+    for (const sessionId of failedSessions) {
+      this.sessions.delete(sessionId)
+    }
   }
 }
