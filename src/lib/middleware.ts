@@ -14,10 +14,13 @@ export const createRefreshMiddleware = <T>(options: MiddlewareOptions<T>) => {
     await next()
 
     if (c.res.ok) {
-      const data = await fetchData(c)
-      const component = renderComponent(data)
-
-      c.executionCtx.waitUntil(broadcastRefresh(c, resourceId, component))
+      c.executionCtx.waitUntil(
+        (async () => {
+          const data = await fetchData(c)
+          const component = renderComponent(data)
+          await broadcastRefresh(c, resourceId, component)
+        })()
+      )
     }
   }
 }

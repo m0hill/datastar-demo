@@ -6,7 +6,10 @@ export const createRealtimeRouter = (bindingKey: keyof Env) => {
 
   router.get('/:resourceId/stream', c => {
     const ns = c.env[bindingKey] as unknown as DurableObjectNamespace
-    const id = ns.idFromName(c.req.param('resourceId'))
+    const resourceId = c.req.param('resourceId')
+    const colo = (c.req.raw.cf as any)?.colo || 'default'
+    const coloAwareId = `${colo}-${resourceId}`
+    const id = ns.idFromName(coloAwareId)
     const stub = ns.get(id)
 
     const url = new URL(c.req.url)
@@ -16,7 +19,10 @@ export const createRealtimeRouter = (bindingKey: keyof Env) => {
 
   router.post('/:resourceId/broadcast', async c => {
     const ns = c.env[bindingKey] as unknown as DurableObjectNamespace
-    const id = ns.idFromName(c.req.param('resourceId'))
+    const resourceId = c.req.param('resourceId')
+    const colo = (c.req.raw.cf as any)?.colo || 'default'
+    const coloAwareId = `${colo}-${resourceId}`
+    const id = ns.idFromName(coloAwareId)
     const stub = ns.get(id)
 
     const url = new URL(c.req.url)
@@ -38,7 +44,9 @@ export const broadcastRefresh = async (
 ) => {
   const componentHtml = renderToString(component)
 
-  const doId = c.env.BROADCASTER.idFromName(resourceId)
+  const colo = (c.req.raw.cf as any)?.colo || 'default'
+  const coloAwareId = `${colo}-${resourceId}`
+  const doId = c.env.BROADCASTER.idFromName(coloAwareId)
   const stub = c.env.BROADCASTER.get(doId)
 
   const url = new URL(c.req.url)
