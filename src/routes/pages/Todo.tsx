@@ -31,4 +31,4 @@ pages.get('/', async c => {
   return c.html(renderToString(Page))
 })
 
-export { pages }
+export { pages as todoPages }

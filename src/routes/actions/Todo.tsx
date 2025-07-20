@@ -77,4 +77,4 @@ actions.delete('/todos', async c => {
   return c.body(null, 204)
 })
 
-export { actions }
+export { actions as todoActions }

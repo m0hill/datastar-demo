@@ -1,13 +1,13 @@
 import { Hono } from 'hono'
-import { actions as todoActions } from '@/actions/Todo'
-import { createRealtimeRouter } from '@/lib/realtime'
-import { pages as todoPages } from '@/pages/Todo'
+import { todoActions } from '@/routes/actions/Todo'
+import { todoPages } from '@/routes/pages/Todo'
+import { realtimeRouter } from '@/routes/realtime'
 
 export { Broadcaster } from '@/durable-objects/Broadcaster'
 
 const app = new Hono<{ Bindings: Env }>()
 
-app.route('/rt', createRealtimeRouter())
+app.route('/rt', realtimeRouter)
 
 app.route('/', todoPages)
 app.route('/api', todoActions)
