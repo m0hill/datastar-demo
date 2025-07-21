@@ -8,6 +8,7 @@
     "lint": "bunx oxlint@latest",
     "format": "biome check --write .",
     "cf-typegen": "wrangler types",
+    "typecheck": "tsc --noEmit",
     "db:generate": "drizzle-kit generate",
     "db:migrate:local": "wrangler d1 migrations apply todo-app --local",
     "db:migrate": "wrangler d1 migrations apply todo-app --remote",
