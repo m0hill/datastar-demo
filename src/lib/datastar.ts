@@ -5,6 +5,7 @@ export const ds = {
   actions: {
     todos: {
       create: () => `@post('/api/todos', {contentType: 'form'})`,
+      update: (id: string) => `@post('/api/todos/${id}/update', { contentType: 'form' })`,
       toggle: (id: string) => `@post('/api/todos/${id}/toggle')`,
       deleteById: (id: string) => `@delete('/api/todos/${id}')`,
       deleteAll: () => `@delete('/api/todos')`,

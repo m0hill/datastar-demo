@@ -36,6 +36,20 @@ actions.post('/todos', async c => {
   return c.newResponse(null, 204)
 })
 
+actions.post('/todos/:id/update', async c => {
+  const id = c.req.param('id')
+  const db = createDB(c.env)
+  const body = await c.req.parseBody()
+  const content = body['content']
+
+  if (typeof content !== 'string' || content.trim() === '') {
+    return c.text('Invalid todo content', 400)
+  }
+
+  await db.update(todos).set({ content }).where(eq(todos.id, id))
+  return c.newResponse(null, 204)
+})
+
 actions.post('/todos/:id/toggle', async c => {
   const id = c.req.param('id')
   const db = createDB(c.env)
