@@ -26,7 +26,7 @@ const broadcastRefresh = async (
     method: 'POST',
     body: JSON.stringify({
       eventType: 'datastar-patch-elements',
-      payload: { html: componentHtml },
+      payload: { elements: componentHtml },
     }),
   })
 }

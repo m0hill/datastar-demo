@@ -1,5 +1,14 @@
 import { DurableObject } from 'cloudflare:workers'
 
+interface PatchElementsPayload {
+  elements: string
+  selector?: string
+  mode?: 'outer' | 'inner' | 'replace' | 'prepend' | 'append' | 'before' | 'after' | 'remove'
+  useViewTransition?: boolean
+  eventId?: string
+  retryDuration?: number
+}
+
 interface BroadcastBody {
   eventType: string
   payload: unknown
@@ -62,14 +71,22 @@ export class Broadcaster extends DurableObject {
     let message = ''
 
     if (eventType === 'datastar-patch-elements') {
-      const htmlPayload = payload as { html: string }
-      if (htmlPayload?.html) {
-        let dataLines = ''
-        for (const line of htmlPayload.html.split('\n')) {
-          dataLines += `data: elements ${line}\n`
-        }
-        message = `event: ${eventType}\n${dataLines}\n`
+      const patchPayload = payload as PatchElementsPayload
+      if (typeof patchPayload.elements !== 'string') return
+
+      const dataLines: string[] = []
+      if (patchPayload.selector) dataLines.push(`data: selector ${patchPayload.selector}`)
+      if (patchPayload.mode) dataLines.push(`data: mode ${patchPayload.mode}`)
+      if (patchPayload.useViewTransition) dataLines.push(`data: useViewTransition true`)
+
+      for (const line of patchPayload.elements.split('\n')) {
+        dataLines.push(`data: elements ${line}`)
       }
+
+      const eventIdLine = patchPayload.eventId ? `id: ${patchPayload.eventId}\n` : ''
+      const retryLine = patchPayload.retryDuration ? `retry: ${patchPayload.retryDuration}\n` : ''
+
+      message = `event: ${eventType}\n${eventIdLine}${retryLine}${dataLines.join('\n')}\n\n`
     } else {
       const json = JSON.stringify(payload)
       message = `event: ${eventType}\ndata: ${json}\n\n`
