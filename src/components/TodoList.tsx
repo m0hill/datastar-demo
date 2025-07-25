@@ -1,3 +1,4 @@
+import { Github } from 'lucide-react'
 import React from 'react'
 import { TodoForm } from '@/components/TodoForm'
 import { TodoItem } from '@/components/TodoItem'
@@ -15,10 +16,22 @@ export const TodoList: React.FC<{ todos: Todo[] }> = ({ todos }) => {
   return (
     <div id="todo-app" className="max-w-2xl mx-auto p-4" data-signals="{ _filter: 'all' }">
       <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Todo List</h1>
-        <p className="text-gray-600">
-          {completedCount} of {totalCount} tasks completed
-        </p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Todo List</h1>
+            <p className="text-gray-600">
+              {completedCount} of {totalCount} tasks completed
+            </p>
+          </div>
+          <a
+            href="https://github.com/m0hill/datastar-demo"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-gray-500 hover:text-gray-700 transition-colors"
+          >
+            <Github className="w-6 h-6" />
+          </a>
+        </div>
       </div>
 
       <TodoForm />
