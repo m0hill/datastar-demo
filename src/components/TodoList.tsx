@@ -16,13 +16,8 @@ export const TodoList: React.FC<{ todos: Todo[] }> = ({ todos }) => {
   return (
     <div id="todo-app" className="max-w-2xl mx-auto p-4" data-signals="{ _filter: 'all' }">
       <div className="mb-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Todo List</h1>
-            <p className="text-gray-600">
-              {completedCount} of {totalCount} tasks completed
-            </p>
-          </div>
+        <div className="flex items-center gap-3 mb-2">
+          <h1 className="text-3xl font-bold text-gray-900">Todo List</h1>
           <a
             href="https://github.com/m0hill/datastar-demo"
             target="_blank"
@@ -32,6 +27,9 @@ export const TodoList: React.FC<{ todos: Todo[] }> = ({ todos }) => {
             <Github className="w-6 h-6" />
           </a>
         </div>
+        <p className="text-gray-600">
+          {completedCount} of {totalCount} tasks completed
+        </p>
       </div>
 
       <TodoForm />
