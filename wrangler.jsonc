@@ -10,6 +10,13 @@
   "placement": {
     "mode": "smart"
   },
+  "routes": [
+    {
+      "pattern": "datastar.mohil.dev",
+      "custom_domain": true
+    }
+  ],
+  "preview_urls": false,
   "assets": {
     "directory": "./public/",
     "binding": "ASSETS"

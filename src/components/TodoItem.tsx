@@ -12,12 +12,17 @@ type Todo = typeof todos.$inferSelect
 export const TodoItem: React.FC<{ todo: Todo }> = ({ todo }) => {
   const deletingSignal = `_deleting_${todo.id}`
   const editingSignal = `_editing_${todo.id}`
+  const editedContentSignal = `_editedContent_${todo.id}`
 
   return (
     <Card
       id={`todo-${todo.id}`}
       className="mb-2"
-      data-signals={`{ '${deletingSignal}': false, '${editingSignal}': false }`}
+      data-signals={`{ 
+        '${deletingSignal}': false, 
+        '${editingSignal}': false,
+        '${editedContentSignal}': '' 
+      }`}
       data-effect={`if($${editingSignal}) setTimeout(() => el.querySelector('input[name="content"]')?.focus(), 0)`}
     >
       <CardContent className="flex items-center gap-3 p-4">
@@ -29,14 +34,18 @@ export const TodoItem: React.FC<{ todo: Todo }> = ({ todo }) => {
           />
           <span
             className={`flex-1 ${todo.completed ? 'line-through text-gray-500' : 'text-gray-900'}`}
-            data-on-dblclick={`$${editingSignal} = true`}
+            data-on-dblclick={`$${editingSignal} = true; $${editedContentSignal} = '${todo.content}'`}
           >
             {todo.content}
           </span>
           <span className="text-sm text-gray-400">
             {new Date(todo.createdAt).toLocaleDateString()}
           </span>
-          <Button variant="ghost" size="sm" data-on-click={`$${editingSignal} = true`}>
+          <Button
+            variant="ghost"
+            size="sm"
+            data-on-click={`$${editingSignal} = true; $${editedContentSignal} = '${todo.content}'`}
+          >
             <Edit className="h-4 w-4" />
           </Button>
         </div>
@@ -44,12 +53,18 @@ export const TodoItem: React.FC<{ todo: Todo }> = ({ todo }) => {
         <form
           data-show={`$${editingSignal}`}
           className="flex-1 flex items-center gap-2"
-          data-on-submit={`${ds.actions.todos.update(todo.id)}; $${editingSignal} = false`}
+          data-on-submit={`
+            if ($${editedContentSignal} !== '${todo.content}') {
+              ${ds.actions.todos.update(todo.id)};
+            }
+            $${editingSignal} = false;
+          `}
           data-on-keydown={`if (evt.key === 'Escape') { evt.preventDefault(); $${editingSignal} = false }`}
         >
           <Checkbox checked={todo.completed ?? undefined} disabled />
           <Input
             name="content"
+            data-bind={editedContentSignal}
             defaultValue={todo.content}
             className="flex-1"
             autoComplete="off"
