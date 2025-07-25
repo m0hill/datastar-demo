@@ -2,6 +2,8 @@
 
 A modern, real-time collaborative todo application built with **Datastar** and **Cloudflare Workers**.
 
+**Live Demo**: [datastar.mohil.dev](https://datastar.mohil.dev)
+
 ## What's Cool About This App
 
 ### **Zero Client-Side JavaScript**
