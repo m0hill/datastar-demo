@@ -24,15 +24,15 @@
   "durable_objects": {
     "bindings": [
       {
-        "name": "BROADCASTER",
-        "class_name": "Broadcaster"
+        "name": "TODO_RESOURCE",
+        "class_name": "TodoResource"
       }
     ]
   },
   "migrations": [
     {
       "tag": "v1",
-      "new_sqlite_classes": ["Broadcaster"]
+      "new_sqlite_classes": ["TodoResource"]
     }
   ],
   "rules": [

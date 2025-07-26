@@ -3,7 +3,7 @@ import { todoActions } from '@/routes/actions/Todo'
 import { todoPages } from '@/routes/pages/Todo'
 import { realtimeRouter } from '@/routes/realtime'
 
-export { Broadcaster } from '@/durable-objects/Broadcaster'
+export { TodoResource } from '@/durable-objects/resources/TodoResource'
 
 const app = new Hono<{ Bindings: Env }>()
 

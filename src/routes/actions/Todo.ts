@@ -4,8 +4,8 @@ import { ds } from '@/lib/datastar'
 const actions = new Hono<{ Bindings: Env }>()
 
 const getTodoStub = (c: any) => {
-  const id = c.env.BROADCASTER.idFromName(ds.resources.todos)
-  return c.env.BROADCASTER.get(id)
+  const id = c.env.TODO_RESOURCE.idFromName(ds.resources.todos)
+  return c.env.TODO_RESOURCE.get(id)
 }
 
 actions.post('/todos', async c => {

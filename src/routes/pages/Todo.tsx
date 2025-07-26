@@ -2,7 +2,6 @@ import { Hono } from 'hono'
 import { renderToString } from 'react-dom/server'
 import { TodoList } from '@/components/TodoList'
 import { todos } from '@/db/schema'
-import { ds } from '@/lib/datastar'
 
 type Todo = typeof todos.$inferSelect
 
@@ -23,7 +22,6 @@ pages.get('/', async c => {
       </head>
       <body className="bg-gray-100 font-sans">
         <TodoList todos={allTodos} />
-        <div data-on-load={`@get('/rt/${ds.resources.todos}/stream')`}></div>
       </body>
     </html>
   )
