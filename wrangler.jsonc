@@ -36,7 +36,11 @@
   "migrations": [
     {
       "tag": "v2",
-      "new_sqlite_classes": ["TodoResource", "ChatResource"]
+      "new_sqlite_classes": ["TodoResource"]
+    },
+    {
+      "tag": "v3",
+      "new_sqlite_classes": ["ChatResource"]
     }
   ],
   "rules": [
