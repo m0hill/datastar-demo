@@ -1,15 +1,15 @@
 import { Hono } from 'hono'
 import { renderToString } from 'react-dom/server'
 import { TodoList } from '@/components/TodoList'
-import { createDB } from '@/db'
 import { todos } from '@/db/schema'
 import { ds } from '@/lib/datastar'
+
+type Todo = typeof todos.$inferSelect
 
 const pages = new Hono<{ Bindings: Env }>()
 
 pages.get('/', async c => {
-  const db = createDB(c.env)
-  const allTodos = await db.select().from(todos).orderBy(todos.createdAt).all()
+  const allTodos: Todo[] = []
 
   const Page = (
     <html>

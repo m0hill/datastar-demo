@@ -10,10 +10,7 @@
     "cf-typegen": "wrangler types",
     "typecheck": "tsc --noEmit",
     "db:generate": "drizzle-kit generate",
-    "db:migrate:local": "wrangler d1 migrations apply todo-app --local",
-    "db:migrate": "wrangler d1 migrations apply todo-app --remote",
-    "db:studio": "TARGET=production drizzle-kit studio --config=drizzle.config.ts",
-    "db:studio:local": "TARGET=local drizzle-kit studio --config=drizzle.config.ts"
+    "db:studio": "drizzle-kit studio --config=drizzle.config.ts"
   },
   "dependencies": {
     "@radix-ui/react-checkbox": "^1.3.2",

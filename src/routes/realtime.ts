@@ -4,9 +4,7 @@ const router = new Hono<{ Bindings: Env }>()
 
 router.get('/:resourceId/stream', c => {
   const resourceId = c.req.param('resourceId')
-  const colo = c.req.raw.cf?.colo || 'default'
-  const coloAwareId = `${colo}-${resourceId}`
-  const id = c.env.BROADCASTER.idFromName(coloAwareId)
+  const id = c.env.BROADCASTER.idFromName(resourceId)
   const stub = c.env.BROADCASTER.get(id)
 
   const url = new URL(c.req.url)
@@ -16,9 +14,7 @@ router.get('/:resourceId/stream', c => {
 
 router.post('/:resourceId/broadcast', async c => {
   const resourceId = c.req.param('resourceId')
-  const colo = c.req.raw.cf?.colo || 'default'
-  const coloAwareId = `${colo}-${resourceId}`
-  const id = c.env.BROADCASTER.idFromName(coloAwareId)
+  const id = c.env.BROADCASTER.idFromName(resourceId)
   const stub = c.env.BROADCASTER.get(id)
 
   const url = new URL(c.req.url)

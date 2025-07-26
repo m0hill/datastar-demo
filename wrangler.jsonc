@@ -21,13 +21,6 @@
     "directory": "./public/",
     "binding": "ASSETS"
   },
-  "d1_databases": [
-    {
-      "binding": "DB",
-      "database_name": "todo-app",
-      "database_id": "29b8028b-913a-405c-82ac-57111fec65a1"
-    }
-  ],
   "durable_objects": {
     "bindings": [
       {
@@ -38,8 +31,15 @@
   },
   "migrations": [
     {
-      "tag": "v2",
+      "tag": "v1",
       "new_sqlite_classes": ["Broadcaster"]
+    }
+  ],
+  "rules": [
+    {
+      "type": "Text",
+      "globs": ["**/*.sql"],
+      "fallthrough": true
     }
   ],
   "observability": {

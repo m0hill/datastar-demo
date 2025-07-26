@@ -1,89 +1,57 @@
-import { eq, not } from 'drizzle-orm'
 import { Hono } from 'hono'
-import { TodoList } from '@/components/TodoList'
-import { createDB } from '@/db'
-import { todos } from '@/db/schema'
 import { ds } from '@/lib/datastar'
-import { createRefreshMiddleware } from '@/lib/middleware'
 
 const actions = new Hono<{ Bindings: Env }>()
 
-const refreshMiddleware = createRefreshMiddleware({
-  resourceId: ds.resources.todos,
-  fetchData: async c => {
-    const db = createDB(c.env)
-    return db.select().from(todos).orderBy(todos.createdAt).all()
-  },
-  renderComponent: allTodos => <TodoList todos={allTodos} />,
-})
-
-actions.use('*', refreshMiddleware)
+const getTodoStub = (c: any) => {
+  const id = c.env.BROADCASTER.idFromName(ds.resources.todos)
+  return c.env.BROADCASTER.get(id)
+}
 
 actions.post('/todos', async c => {
-  const db = createDB(c.env)
   const body = await c.req.parseBody()
-  const content = body['text']
-
-  if (typeof content !== 'string' || content.trim() === '') {
-    return c.text('Invalid todo content', 400)
-  }
-
-  await db.insert(todos).values({
-    id: crypto.randomUUID(),
-    content: content,
-    createdAt: new Date(),
-  })
+  const stub = getTodoStub(c)
+  await stub.addTodo(body['text'] as string)
   return c.newResponse(null, 204)
 })
 
 actions.post('/todos/:id/update', async c => {
-  const id = c.req.param('id')
-  const db = createDB(c.env)
+  const { id } = c.req.param()
   const body = await c.req.parseBody()
-  const content = body['content']
-
-  if (typeof content !== 'string' || content.trim() === '') {
-    return c.text('Invalid todo content', 400)
-  }
-
-  await db.update(todos).set({ content }).where(eq(todos.id, id))
+  const stub = getTodoStub(c)
+  await stub.updateTodo(id, body['content'] as string)
   return c.newResponse(null, 204)
 })
 
 actions.post('/todos/:id/toggle', async c => {
-  const id = c.req.param('id')
-  const db = createDB(c.env)
-  await db
-    .update(todos)
-    .set({ completed: not(todos.completed) })
-    .where(eq(todos.id, id))
+  const { id } = c.req.param()
+  const stub = getTodoStub(c)
+  await stub.toggleTodo(id)
   return c.newResponse(null, 204)
 })
 
 actions.post('/todos/toggle-all', async c => {
-  const db = createDB(c.env)
-  const allTodos = await db.select({ completed: todos.completed }).from(todos)
-  const allCompleted = allTodos.length > 0 && allTodos.every(t => t.completed)
-  await db.update(todos).set({ completed: !allCompleted })
+  const stub = getTodoStub(c)
+  await stub.toggleAllTodos()
   return c.newResponse(null, 204)
 })
 
 actions.delete('/todos/completed', async c => {
-  const db = createDB(c.env)
-  await db.delete(todos).where(eq(todos.completed, true))
+  const stub = getTodoStub(c)
+  await stub.deleteCompletedTodos()
   return c.newResponse(null, 204)
 })
 
 actions.delete('/todos', async c => {
-  const db = createDB(c.env)
-  await db.delete(todos)
+  const stub = getTodoStub(c)
+  await stub.deleteAllTodos()
   return c.newResponse(null, 204)
 })
 
 actions.delete('/todos/:id', async c => {
-  const id = c.req.param('id')
-  const db = createDB(c.env)
-  await db.delete(todos).where(eq(todos.id, id))
+  const { id } = c.req.param()
+  const stub = getTodoStub(c)
+  await stub.deleteTodo(id)
   return c.newResponse(null, 204)
 })
 

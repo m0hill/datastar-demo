@@ -1,6 +1,6 @@
 export const ds = {
   resources: {
-    todos: 'todo-list-global',
+    todos: 'v1-todo-list',
   },
   actions: {
     todos: {
