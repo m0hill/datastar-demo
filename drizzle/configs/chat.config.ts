@@ -1,8 +1,8 @@
 import { defineConfig } from 'drizzle-kit'
 
 export default defineConfig({
-  schema: './src/db/schema.ts',
-  out: './migrations',
+  schema: './drizzle/schemas/chat.schema.ts',
+  out: './migrations/chat',
   dialect: 'sqlite',
   driver: 'durable-sqlite',
 })

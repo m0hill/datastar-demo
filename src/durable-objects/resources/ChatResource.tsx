@@ -1,10 +1,10 @@
+import * as schema from '@drizzle/schemas/chat.schema'
+import { messages } from '@drizzle/schemas/chat.schema'
+import migrations from '@migrations/chat/migrations'
 import { DrizzleSqliteDODatabase, drizzle as drizzleDO } from 'drizzle-orm/durable-sqlite'
 import { migrate as migrateDO } from 'drizzle-orm/durable-sqlite/migrator'
 import { renderToString } from 'react-dom/server'
 import { ChatRoom } from '@/components/ChatRoom'
-import * as schema from '@/db/schema'
-import { messages } from '@/db/schema'
-import migrations from '../../../migrations/migrations.js'
 import { BaseResource } from '../base'
 
 export class ChatResource extends BaseResource {

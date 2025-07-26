@@ -1,11 +1,11 @@
+import * as schema from '@drizzle/schemas/todo.schema'
+import { todos } from '@drizzle/schemas/todo.schema'
+import migrations from '@migrations/todo/migrations'
 import { eq, not } from 'drizzle-orm'
 import { DrizzleSqliteDODatabase, drizzle as drizzleDO } from 'drizzle-orm/durable-sqlite'
 import { migrate as migrateDO } from 'drizzle-orm/durable-sqlite/migrator'
 import { renderToString } from 'react-dom/server'
 import { TodoList } from '@/components/TodoList'
-import * as schema from '@/db/schema'
-import { todos } from '@/db/schema'
-import migrations from '../../../migrations/migrations.js'
 import { BaseResource } from '../base'
 
 export class TodoResource extends BaseResource {

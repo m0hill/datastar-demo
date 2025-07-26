@@ -14,7 +14,9 @@
     "skipLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@drizzle/*": ["./drizzle/*"],
+      "@migrations/*": ["./migrations/*"]
     },
     "noFallthroughCasesInSwitch": true,
     "noUncheckedIndexedAccess": true,

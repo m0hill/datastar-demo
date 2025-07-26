@@ -1,10 +1,10 @@
+import { todos } from '@drizzle/schemas/todo.schema'
 import { Github } from 'lucide-react'
 import React from 'react'
 import { TodoForm } from '@/components/TodoForm'
 import { TodoItem } from '@/components/TodoItem'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { todos } from '@/db/schema'
 import { ds } from '@/lib/datastar'
 
 type Todo = typeof todos.$inferSelect

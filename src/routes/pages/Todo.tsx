@@ -1,7 +1,7 @@
+import { todos } from '@drizzle/schemas/todo.schema'
 import { Hono } from 'hono'
 import { renderToString } from 'react-dom/server'
 import { TodoList } from '@/components/TodoList'
-import { todos } from '@/db/schema'
 
 type Todo = typeof todos.$inferSelect
 

@@ -3,8 +3,8 @@ import React from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
-import { messages } from '@/db/schema'
 import { ds } from '@/lib/datastar'
+import { messages } from '../../drizzle/schemas/chat.schema'
 
 type Message = typeof messages.$inferSelect
 

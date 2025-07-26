@@ -35,11 +35,11 @@
   },
   "migrations": [
     {
-      "tag": "v2",
+      "tag": "v1",
       "new_sqlite_classes": ["TodoResource"]
     },
     {
-      "tag": "v3",
+      "tag": "v1",
       "new_sqlite_classes": ["ChatResource"]
     }
   ],
