@@ -26,13 +26,17 @@
       {
         "name": "TODO_RESOURCE",
         "class_name": "TodoResource"
+      },
+      {
+        "name": "CHAT_RESOURCE",
+        "class_name": "ChatResource"
       }
     ]
   },
   "migrations": [
     {
       "tag": "v2",
-      "new_sqlite_classes": ["TodoResource"]
+      "new_sqlite_classes": ["TodoResource", "ChatResource"]
     }
   ],
   "rules": [

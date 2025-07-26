@@ -1,6 +1,7 @@
 export const ds = {
   resources: {
     todos: 'v1-todo-list',
+    chat: 'v1-chat-room',
   },
   actions: {
     todos: {
@@ -11,6 +12,9 @@ export const ds = {
       deleteAll: () => `@delete('/api/todos')`,
       deleteCompleted: () => `@delete('/api/todos/completed')`,
       toggleAll: () => `@post('/api/todos/toggle-all')`,
+    },
+    chat: {
+      createMessage: () => `@post('/api/chat/messages', {contentType: 'form'})`,
     },
   },
 }
