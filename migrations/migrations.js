@@ -1,9 +1,10 @@
-import m0000 from './0000_even_energizer.sql'
-import journal from './meta/_journal.json'
+import journal from './meta/_journal.json';
+import m0000 from './0000_old_silver_centurion.sql';
 
-export default {
-  journal,
-  migrations: {
-    m0000,
-  },
-}
+  export default {
+    journal,
+    migrations: {
+      m0000
+    }
+  }
+  
