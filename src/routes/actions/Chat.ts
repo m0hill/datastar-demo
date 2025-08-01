@@ -11,7 +11,7 @@ const getChatStub = (c: Context<{ Bindings: Env }>) => {
 actions.post('/chat/messages', async c => {
   const body = await c.req.parseBody()
   const stub = getChatStub(c)
-  await stub.addMessage(body['username'] as string, body['content'] as string)
+  c.executionCtx.waitUntil(stub.addMessage(body['username'] as string, body['content'] as string))
   return c.newResponse(null, 204)
 })
 

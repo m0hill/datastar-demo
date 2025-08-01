@@ -11,7 +11,7 @@ const getTodoStub = (c: Context<{ Bindings: Env }>) => {
 actions.post('/todos', async c => {
   const body = await c.req.parseBody()
   const stub = getTodoStub(c)
-  await stub.addTodo(body['text'] as string)
+  c.executionCtx.waitUntil(stub.addTodo(body['text'] as string))
   return c.newResponse(null, 204)
 })
 
@@ -19,39 +19,39 @@ actions.post('/todos/:id/update', async c => {
   const { id } = c.req.param()
   const body = await c.req.parseBody()
   const stub = getTodoStub(c)
-  await stub.updateTodo(id, body['content'] as string)
+  c.executionCtx.waitUntil(stub.updateTodo(id, body['content'] as string))
   return c.newResponse(null, 204)
 })
 
 actions.post('/todos/:id/toggle', async c => {
   const { id } = c.req.param()
   const stub = getTodoStub(c)
-  await stub.toggleTodo(id)
+  c.executionCtx.waitUntil(stub.toggleTodo(id))
   return c.newResponse(null, 204)
 })
 
 actions.post('/todos/toggle-all', async c => {
   const stub = getTodoStub(c)
-  await stub.toggleAllTodos()
+  c.executionCtx.waitUntil(stub.toggleAllTodos())
   return c.newResponse(null, 204)
 })
 
 actions.delete('/todos/completed', async c => {
   const stub = getTodoStub(c)
-  await stub.deleteCompletedTodos()
+  c.executionCtx.waitUntil(stub.deleteCompletedTodos())
   return c.newResponse(null, 204)
 })
 
 actions.delete('/todos', async c => {
   const stub = getTodoStub(c)
-  await stub.deleteAllTodos()
+  c.executionCtx.waitUntil(stub.deleteAllTodos())
   return c.newResponse(null, 204)
 })
 
 actions.delete('/todos/:id', async c => {
   const { id } = c.req.param()
   const stub = getTodoStub(c)
-  await stub.deleteTodo(id)
+  c.executionCtx.waitUntil(stub.deleteTodo(id))
   return c.newResponse(null, 204)
 })
 
