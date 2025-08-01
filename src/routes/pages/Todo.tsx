@@ -2,6 +2,7 @@ import { todos } from '@drizzle/schemas/todo.schema'
 import { Hono } from 'hono'
 import { renderToString } from 'react-dom/server'
 import { TodoList } from '@/components/TodoList'
+import { ds } from '@/lib/datastar'
 
 type Todo = typeof todos.$inferSelect
 
@@ -21,7 +22,9 @@ pages.get('/', async c => {
         ></script>
       </head>
       <body className="bg-gray-100 font-sans">
-        <TodoList todos={allTodos} />
+        <div data-on-load={`@get('/rt/todos/${ds.resources.todos}/stream')`}>
+          <TodoList todos={allTodos} />
+        </div>
       </body>
     </html>
   )

@@ -1,6 +1,7 @@
 import { Hono } from 'hono'
 import { renderToString } from 'react-dom/server'
 import { ChatRoom } from '@/components/ChatRoom'
+import { ds } from '@/lib/datastar'
 
 const pages = new Hono<{ Bindings: Env }>()
 
@@ -16,7 +17,9 @@ pages.get('/chat', async c => {
         ></script>
       </head>
       <body className="bg-gray-100 font-sans">
-        <ChatRoom messages={[]} />
+        <div data-on-load={`@get('/rt/chat/${ds.resources.chat}/stream')`}>
+          <ChatRoom messages={[]} />
+        </div>
       </body>
     </html>
   )

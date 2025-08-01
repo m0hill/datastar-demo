@@ -14,7 +14,6 @@ export const ChatRoom: React.FC<{ messages: Message[] }> = ({ messages }) => {
       id="chat-resource"
       className="max-w-2xl mx-auto p-4"
       data-signals="{ _username: '', _message: '' }"
-      data-on-load={`@get('/rt/chat/${ds.resources.chat}/stream')`}
       data-effect="el.querySelector('#messages-list')?.scrollTo(0, el.querySelector('#messages-list').scrollHeight)"
     >
       <Card>

@@ -14,12 +14,7 @@ export const TodoList: React.FC<{ todos: Todo[] }> = ({ todos }) => {
   const totalCount = todos.length
 
   return (
-    <div
-      id="todos-resource"
-      className="max-w-2xl mx-auto p-4"
-      data-signals="{ _filter: 'all' }"
-      data-on-load={`@get('/rt/todos/${ds.resources.todos}/stream')`}
-    >
+    <div id="todos-resource" className="max-w-2xl mx-auto p-4" data-signals="{ _filter: 'all' }">
       <div className="mb-6">
         <div className="flex items-center gap-3 mb-2">
           <h1 className="text-3xl font-bold text-gray-900">Todo List</h1>
