@@ -30,6 +30,10 @@
       {
         "name": "CHAT_RESOURCE",
         "class_name": "ChatResource"
+      },
+      {
+        "name": "GRID_RESOURCE",
+        "class_name": "GridResource"
       }
     ]
   },
@@ -37,6 +41,10 @@
     {
       "tag": "v1",
       "new_sqlite_classes": ["TodoResource", "ChatResource"]
+    },
+    {
+      "tag": "v2",
+      "new_sqlite_classes": ["GridResource"]
     }
   ],
   "rules": [

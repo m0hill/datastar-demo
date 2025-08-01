@@ -5,6 +5,7 @@ import { DrizzleSqliteDODatabase, drizzle as drizzleDO } from 'drizzle-orm/durab
 import { migrate as migrateDO } from 'drizzle-orm/durable-sqlite/migrator'
 import { renderToString } from 'react-dom/server'
 import { ChatRoom } from '@/components/ChatRoom'
+import { isDevelopment } from '@/constants/env'
 import { BaseResource } from '@/routes/resources'
 
 export class ChatResource extends BaseResource {
@@ -12,7 +13,7 @@ export class ChatResource extends BaseResource {
 
   constructor(ctx: DurableObjectState, env: Env) {
     super(ctx, env)
-    this.db = drizzleDO(this.ctx.storage, { schema, logger: true })
+    this.db = drizzleDO(this.ctx.storage, { schema, logger: isDevelopment })
     this.ctx.blockConcurrencyWhile(() => migrateDO(this.db, migrations))
   }
 

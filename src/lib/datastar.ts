@@ -2,6 +2,7 @@ export const ds = {
   resources: {
     todos: 'v1-todo-list',
     chat: 'v1-chat-room',
+    grid: 'v1-grid',
   },
   actions: {
     todos: {
@@ -15,6 +16,10 @@ export const ds = {
     },
     chat: {
       createMessage: () => `@post('/api/chat/messages', {contentType: 'form'})`,
+    },
+    grid: {
+      check: () => `@post('/api/grid/check')`,
+      updateViewport: () => `@post('/api/grid/viewport', { contentType: 'json' })`,
     },
   },
 }

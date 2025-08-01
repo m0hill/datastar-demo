@@ -14,6 +14,14 @@ router.get('/:resourceType/:resourceId/stream', c => {
       url.pathname = '/stream'
       return stub.fetch(url.toString(), c.req.raw)
     }
+    case 'grid': {
+      const doNamespace = c.env.GRID_RESOURCE
+      const id = doNamespace.idFromName(resourceId)
+      const stub = doNamespace.get(id)
+      const url = new URL(c.req.url)
+      url.pathname = '/stream'
+      return stub.fetch(url.toString(), c.req.raw)
+    }
     case 'chat': {
       const doNamespace = c.env.CHAT_RESOURCE
       const id = doNamespace.idFromName(resourceId)
