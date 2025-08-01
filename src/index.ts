@@ -5,8 +5,8 @@ import { chatPages } from '@/routes/pages/Chat'
 import { todoPages } from '@/routes/pages/Todo'
 import { realtimeRouter } from '@/routes/realtime'
 
-export { ChatResource } from '@/durable-objects/resources/ChatResource'
-export { TodoResource } from '@/durable-objects/resources/TodoResource'
+export { ChatResource } from '@/routes/resources/Chat'
+export { TodoResource } from '@/routes/resources/Todo'
 
 const app = new Hono<{ Bindings: Env }>()
 

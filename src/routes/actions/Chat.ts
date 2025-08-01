@@ -1,9 +1,9 @@
-import { Hono } from 'hono'
+import { type Context, Hono } from 'hono'
 import { ds } from '@/lib/datastar'
 
 const actions = new Hono<{ Bindings: Env }>()
 
-const getChatStub = (c: any) => {
+const getChatStub = (c: Context<{ Bindings: Env }>) => {
   const id = c.env.CHAT_RESOURCE.idFromName(ds.resources.chat)
   return c.env.CHAT_RESOURCE.get(id)
 }

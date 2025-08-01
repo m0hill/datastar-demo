@@ -5,7 +5,7 @@ import { DrizzleSqliteDODatabase, drizzle as drizzleDO } from 'drizzle-orm/durab
 import { migrate as migrateDO } from 'drizzle-orm/durable-sqlite/migrator'
 import { renderToString } from 'react-dom/server'
 import { ChatRoom } from '@/components/ChatRoom'
-import { BaseResource } from '../base'
+import { BaseResource } from '@/routes/resources'
 
 export class ChatResource extends BaseResource {
   private db: DrizzleSqliteDODatabase<typeof schema>

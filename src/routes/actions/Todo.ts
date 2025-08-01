@@ -1,9 +1,9 @@
-import { Hono } from 'hono'
+import { type Context, Hono } from 'hono'
 import { ds } from '@/lib/datastar'
 
 const actions = new Hono<{ Bindings: Env }>()
 
-const getTodoStub = (c: any) => {
+const getTodoStub = (c: Context<{ Bindings: Env }>) => {
   const id = c.env.TODO_RESOURCE.idFromName(ds.resources.todos)
   return c.env.TODO_RESOURCE.get(id)
 }
