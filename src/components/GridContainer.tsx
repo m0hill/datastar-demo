@@ -8,7 +8,6 @@ const CHUNK_PIXEL_SIZE = CHUNK_SIZE * CELL_PIXEL_SIZE
 const TOTAL_PIXEL_SIZE = GRID_DIMENSION * CELL_PIXEL_SIZE
 
 export const GridContainer: React.FC = () => {
-  // This expression now correctly calculates the new chunk based on the window's scroll position
   const onScrollExpression = `
     $_newChunkX = Math.floor(window.scrollX / ${CHUNK_PIXEL_SIZE});
     $_newChunkY = Math.floor(window.scrollY / ${CHUNK_PIXEL_SIZE});
@@ -58,7 +57,6 @@ export const GridContainer: React.FC = () => {
 
       <div
         data-ref="_view"
-        // The overflow-auto is still useful for focus and accessibility
         className="w-full max-w-4xl h-[75vh] overflow-auto border-4 border-gray-300 bg-gray-50 shadow-lg"
       >
         <div

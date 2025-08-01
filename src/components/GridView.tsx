@@ -10,7 +10,6 @@ interface GridViewProps {
 
 const CELL_PIXEL_SIZE = 15
 
-// This component is rendered on the SERVER inside the Durable Object
 export const GridView: React.FC<GridViewProps> = ({ chunks, chunkSize, chunksPerRow }) => {
   return (
     <>
@@ -36,7 +35,6 @@ export const GridView: React.FC<GridViewProps> = ({ chunks, chunkSize, chunksPer
                 type="checkbox"
                 className="m-0 size-[15px] appearance-none border border-gray-400 checked:bg-blue-500 cursor-pointer"
                 checked={cellState === 1}
-                // 👇 This is the only line that changed
                 data-on-click={`$chunkId = ${chunk.id}; $cellIndex = ${cellIndex}; ${ds.actions.grid.check()}`}
                 readOnly
               />

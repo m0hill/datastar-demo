@@ -20,7 +20,7 @@ export class GridResource extends BaseResource {
 
   constructor(ctx: DurableObjectState, env: Env) {
     super(ctx, env)
-    this.db = drizzleDO(this.ctx.storage, { schema, logger: false })
+    this.db = drizzleDO(this.ctx.storage, { schema, logger: isDevelopment })
     this.ctx.blockConcurrencyWhile(() => this.initialize())
   }
 
@@ -43,10 +43,12 @@ export class GridResource extends BaseResource {
   protected async render(): Promise<string> {
     const { x, y } = this.viewport
 
+    const renderBuffer = 4
+
     const startChunkX = Math.max(0, x - 1)
-    const endChunkX = Math.min(CHUNKS_PER_ROW - 1, x + 2)
+    const endChunkX = Math.min(CHUNKS_PER_ROW - 1, x + renderBuffer)
     const startChunkY = Math.max(0, y - 1)
-    const endChunkY = Math.min(CHUNKS_PER_ROW - 1, y + 2)
+    const endChunkY = Math.min(CHUNKS_PER_ROW - 1, y + renderBuffer)
 
     const requiredChunkIds: number[] = []
     for (let i = startChunkY; i <= endChunkY; i++) {
@@ -64,7 +66,6 @@ export class GridResource extends BaseResource {
       .from(chunks)
       .where(inArray(chunks.id, requiredChunkIds))
 
-    // 👇 The component is now wrapped with the container div it's replacing
     const gridComponent = (
       <div id="grid-board" className="absolute top-0 left-0">
         <GridView chunks={visibleChunks} chunkSize={CHUNK_SIZE} chunksPerRow={CHUNKS_PER_ROW} />
