@@ -18,7 +18,7 @@ pages.get('/', async c => {
         ></script>
       </head>
       <body className="bg-gray-100 font-sans p-4">
-        <div data-on-load={`@get('/rt/grid/${ds.resources.grid}/stream')`}>
+        <div data-on-load={`@get('/rt/grid/${ds.resources.grid}/stream', {openWhenHidden: true})`}>
           <GridContainer />
         </div>
       </body>
