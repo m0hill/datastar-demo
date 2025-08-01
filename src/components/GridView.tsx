@@ -32,18 +32,15 @@ export const GridView: React.FC<GridViewProps> = ({ chunks, chunkSize, chunksPer
             }}
           >
             {chunk.cells.map((cellState, cellIndex) => (
-              <input
-                key={cellIndex}
-                type="checkbox"
-                style={{
-                  width: `${CELL_SIZE_PX}px`,
-                  height: `${CELL_SIZE_PX}px`,
-                }}
-                className="m-0 appearance-none border border-gray-400 checked:bg-blue-500 cursor-pointer"
-                checked={cellState === 1}
-                data-on-click={`$chunkId = ${chunk.id}; $cellIndex = ${cellIndex}; ${ds.actions.grid.check()}`}
-                readOnly
-              />
+              <div key={cellIndex} className="relative flex justify-center items-center">
+                <input
+                  type="checkbox"
+                  className="grid-checkbox m-0 appearance-none border border-gray-400 checked:bg-blue-500 cursor-pointer"
+                  checked={cellState === 1}
+                  data-on-click={`$chunkId = ${chunk.id}; $cellIndex = ${cellIndex}; ${ds.actions.grid.check()}`}
+                  readOnly
+                />
+              </div>
             ))}
           </div>
         )

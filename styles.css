@@ -121,3 +121,15 @@
     @apply bg-background text-foreground;
   }
 }
+
+.grid-checkbox {
+  width: 22px;
+  height: 22px;
+}
+
+@media (max-width: 768px) {
+  .grid-checkbox {
+    width: 28px;
+    height: 28px;
+  }
+}

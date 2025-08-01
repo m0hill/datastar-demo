@@ -4,10 +4,10 @@ import { ds } from '@/lib/datastar'
 
 export const GridContainer: React.FC = () => {
   const onScrollExpression = `
-    $_newChunkX = Math.floor(window.scrollX / ${CHUNK_PIXEL_SIZE});
-    $_newChunkY = Math.floor(window.scrollY / ${CHUNK_PIXEL_SIZE});
-    $x = Math.floor(window.scrollX / ${PX_PER_CELL});
-    $y = Math.floor(window.scrollY / ${PX_PER_CELL});
+    $_newChunkX = Math.floor($_view.scrollLeft / ${CHUNK_PIXEL_SIZE});
+    $_newChunkY = Math.floor($_view.scrollTop / ${CHUNK_PIXEL_SIZE});
+    $x = Math.floor($_view.scrollLeft / ${PX_PER_CELL});
+    $y = Math.floor($_view.scrollTop / ${PX_PER_CELL});
     if ($_newChunkX !== $chunkX || $_newChunkY !== $chunkY) {
       $chunkX = $_newChunkX;
       $chunkY = $_newChunkY;
@@ -20,9 +20,6 @@ export const GridContainer: React.FC = () => {
   return (
     <div
       id="grid-resource"
-      {...{
-        'data-on-scroll__window__throttle.150ms': onScrollExpression,
-      }}
       data-signals={`{
         chunkX: 0,
         chunkY: 0,
@@ -52,6 +49,9 @@ export const GridContainer: React.FC = () => {
 
       <div
         data-ref="_view"
+        {...{
+          'data-on-scroll__throttle.150ms': onScrollExpression,
+        }}
         className="w-full max-w-4xl h-[75vh] overflow-auto border-4 border-gray-300 bg-gray-50 shadow-lg"
       >
         <div
