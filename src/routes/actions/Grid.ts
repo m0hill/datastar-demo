@@ -16,10 +16,11 @@ actions.post('/grid/check', async c => {
 })
 
 actions.post('/grid/viewport', async c => {
-  const { chunkX, chunkY } = await c.req.json()
   const stub = getGridStub(c)
-  c.executionCtx.waitUntil(stub.updateViewport(chunkX, chunkY))
-  return c.newResponse(null, 204)
+  const url = new URL(c.req.url)
+  url.pathname = '/viewport'
+  const doRequest = new Request(url, c.req.raw)
+  return stub.fetch(doRequest)
 })
 
 export { actions as gridActions }

@@ -19,6 +19,7 @@ export const GridView: React.FC<GridViewProps> = ({ chunks, chunkSize, chunksPer
         return (
           <div
             key={chunk.id}
+            id={`chunk-${chunk.id}`}
             className="grid"
             style={{
               position: 'absolute',

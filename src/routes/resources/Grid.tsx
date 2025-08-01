@@ -14,9 +14,13 @@ const CHUNK_SIZE = 16
 const CHUNKS_PER_ROW = Math.ceil(GRID_DIMENSION / CHUNK_SIZE)
 const TOTAL_CHUNKS = CHUNKS_PER_ROW * CHUNKS_PER_ROW
 
+interface ViewportPayload {
+  chunkX: number
+  chunkY: number
+}
+
 export class GridResource extends BaseResource {
   private db: DrizzleSqliteDODatabase<typeof schema>
-  private viewport = { x: 0, y: 0 }
 
   constructor(ctx: DurableObjectState, env: Env) {
     super(ctx, env)
@@ -41,8 +45,10 @@ export class GridResource extends BaseResource {
   }
 
   protected async render(): Promise<string> {
-    const { x, y } = this.viewport
+    return this.renderViewport(0, 0)
+  }
 
+  private async renderViewport(x: number, y: number): Promise<string> {
     const renderBuffer = 4
 
     const startChunkX = Math.max(0, x - 1)
@@ -58,7 +64,7 @@ export class GridResource extends BaseResource {
     }
 
     if (requiredChunkIds.length === 0) {
-      return ''
+      return `<div id="grid-board" class="absolute top-0 left-0"></div>`
     }
 
     const visibleChunks = await this.db
@@ -74,11 +80,16 @@ export class GridResource extends BaseResource {
     return renderToString(gridComponent)
   }
 
-  async updateViewport(chunkX: number, chunkY: number) {
-    if (this.viewport.x !== chunkX || this.viewport.y !== chunkY) {
-      this.viewport = { x: chunkX, y: chunkY }
-      await this.broadcastState()
-    }
+  async handleViewportUpdate(request: Request): Promise<Response> {
+    const { chunkX, chunkY } = await request.json<ViewportPayload>()
+    const html = await this.renderViewport(chunkX, chunkY)
+    const headers = new Headers({
+      'Content-Type': 'text/html',
+      'datastar-selector': '#grid-board',
+      'datastar-mode': 'outer',
+      'Access-Control-Allow-Origin': '*',
+    })
+    return new Response(html, { headers })
   }
 
   async toggleCell(chunkId: number, cellIndex: number) {
@@ -89,6 +100,24 @@ export class GridResource extends BaseResource {
     newCells[cellIndex] = newCells[cellIndex] === 0 ? 1 : 0
 
     await this.db.update(chunks).set({ cells: newCells }).where(eq(chunks.id, chunkId))
-    await this.broadcastState()
+
+    const updatedChunk = { ...chunk, cells: newCells }
+    const chunkHtml = renderToString(
+      <GridView chunks={[updatedChunk]} chunkSize={CHUNK_SIZE} chunksPerRow={CHUNKS_PER_ROW} />
+    )
+
+    this.broadcastPatch({
+      elements: chunkHtml,
+      selector: `#chunk-${chunkId}`,
+      mode: 'outer',
+    })
+  }
+
+  override async fetch(request: Request): Promise<Response> {
+    const url = new URL(request.url)
+    if (request.method === 'POST' && url.pathname.endsWith('/viewport')) {
+      return this.handleViewportUpdate(request)
+    }
+    return super.fetch(request)
   }
 }
