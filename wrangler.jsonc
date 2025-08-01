@@ -39,11 +39,7 @@
   },
   "migrations": [
     {
-      "tag": "v1",
-      "new_sqlite_classes": ["TodoResource", "ChatResource"]
-    },
-    {
-      "tag": "v2",
+      "tag": "v3",
       "new_sqlite_classes": ["GridResource"]
     }
   ],
