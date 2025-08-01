@@ -7,12 +7,8 @@ import { migrate as migrateDO } from 'drizzle-orm/durable-sqlite/migrator'
 import { renderToString } from 'react-dom/server'
 import { GridView } from '@/components/GridView'
 import { isDevelopment } from '@/constants/env'
+import { CHUNK_SIZE, CHUNKS_PER_ROW, TOTAL_CHUNKS } from '@/constants/grid'
 import { BaseResource } from '@/routes/resources'
-
-const GRID_DIMENSION = 1000
-const CHUNK_SIZE = 16
-const CHUNKS_PER_ROW = Math.ceil(GRID_DIMENSION / CHUNK_SIZE)
-const TOTAL_CHUNKS = CHUNKS_PER_ROW * CHUNKS_PER_ROW
 
 interface ViewportPayload {
   chunkX: number

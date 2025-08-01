@@ -1,5 +1,6 @@
 import type { Chunk } from '@drizzle/schemas/grid.schema'
 import React from 'react'
+import { CELL_GAP_PX, CELL_SIZE_PX, PX_PER_CELL } from '@/constants/grid'
 import { ds } from '@/lib/datastar'
 
 interface GridViewProps {
@@ -7,8 +8,6 @@ interface GridViewProps {
   chunkSize: number
   chunksPerRow: number
 }
-
-const CELL_PIXEL_SIZE = 15
 
 export const GridView: React.FC<GridViewProps> = ({ chunks, chunkSize, chunksPerRow }) => {
   return (
@@ -23,18 +22,24 @@ export const GridView: React.FC<GridViewProps> = ({ chunks, chunkSize, chunksPer
             className="grid"
             style={{
               position: 'absolute',
-              left: `${chunkX * chunkSize * CELL_PIXEL_SIZE}px`,
-              top: `${chunkY * chunkSize * CELL_PIXEL_SIZE}px`,
-              width: `${chunkSize * CELL_PIXEL_SIZE}px`,
-              height: `${chunkSize * CELL_PIXEL_SIZE}px`,
-              gridTemplateColumns: `repeat(${chunkSize}, 1fr)`,
+              left: `${chunkX * chunkSize * PX_PER_CELL}px`,
+              top: `${chunkY * chunkSize * PX_PER_CELL}px`,
+              width: `${chunkSize * PX_PER_CELL}px`,
+              height: `${chunkSize * PX_PER_CELL}px`,
+              gridTemplateColumns: `repeat(${chunkSize}, ${CELL_SIZE_PX}px)`,
+              gridTemplateRows: `repeat(${chunkSize}, ${CELL_SIZE_PX}px)`,
+              gap: `${CELL_GAP_PX}px`,
             }}
           >
             {chunk.cells.map((cellState, cellIndex) => (
               <input
                 key={cellIndex}
                 type="checkbox"
-                className="m-0 size-[15px] appearance-none border border-gray-400 checked:bg-blue-500 cursor-pointer"
+                style={{
+                  width: `${CELL_SIZE_PX}px`,
+                  height: `${CELL_SIZE_PX}px`,
+                }}
+                className="m-0 appearance-none border border-gray-400 checked:bg-blue-500 cursor-pointer"
                 checked={cellState === 1}
                 data-on-click={`$chunkId = ${chunk.id}; $cellIndex = ${cellIndex}; ${ds.actions.grid.check()}`}
                 readOnly

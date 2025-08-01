@@ -1,18 +1,13 @@
 import React from 'react'
+import { CHUNK_PIXEL_SIZE, PX_PER_CELL, TOTAL_PIXEL_SIZE } from '@/constants/grid'
 import { ds } from '@/lib/datastar'
-
-const GRID_DIMENSION = 1000
-const CHUNK_SIZE = 16
-const CELL_PIXEL_SIZE = 15
-const CHUNK_PIXEL_SIZE = CHUNK_SIZE * CELL_PIXEL_SIZE
-const TOTAL_PIXEL_SIZE = GRID_DIMENSION * CELL_PIXEL_SIZE
 
 export const GridContainer: React.FC = () => {
   const onScrollExpression = `
     $_newChunkX = Math.floor(window.scrollX / ${CHUNK_PIXEL_SIZE});
     $_newChunkY = Math.floor(window.scrollY / ${CHUNK_PIXEL_SIZE});
-    $x = Math.floor(window.scrollX / ${CELL_PIXEL_SIZE});
-    $y = Math.floor(window.scrollY / ${CELL_PIXEL_SIZE});
+    $x = Math.floor(window.scrollX / ${PX_PER_CELL});
+    $y = Math.floor(window.scrollY / ${PX_PER_CELL});
     if ($_newChunkX !== $chunkX || $_newChunkY !== $chunkY) {
       $chunkX = $_newChunkX;
       $chunkY = $_newChunkY;

@@ -1,0 +1,13 @@
+export const GRID_DIMENSION = 1000
+export const CHUNK_SIZE = 16
+
+export const CELL_SIZE_PX = 22
+export const CELL_GAP_PX = 6
+
+export const PX_PER_CELL = CELL_SIZE_PX + CELL_GAP_PX
+export const CHUNK_PIXEL_SIZE = CHUNK_SIZE * PX_PER_CELL
+export const TOTAL_PIXEL_SIZE = GRID_DIMENSION * PX_PER_CELL
+
+export const CHUNKS_PER_ROW = Math.ceil(GRID_DIMENSION / CHUNK_SIZE)
+
+export const TOTAL_CHUNKS = CHUNKS_PER_ROW * CHUNKS_PER_ROW
